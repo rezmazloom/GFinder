@@ -20,6 +20,7 @@
 #include "core_query_tree_build.h"
 #include "inexact_matching_order.h"
 #include "find_result.h"
+#include "ParsePredicateMatrix.h"
 
 using namespace std;
 
@@ -231,11 +232,12 @@ int main(int argc, char *argv[])
 
 	argv[1] = "C:\\Users\\lihui\\workspace\\DARPA\\MAA_AIDA_V2.1.0_TA3\\TA3\\Input\\soft_prune\\data.format";
 	argv[2] = "C:\\Users\\lihui\\workspace\\DARPA\\MAA_AIDA_V2.1.0_TA3\\TA3\\Input\\soft_prune\\query3E.format";
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	argv[3] = "-f";
-	argv[4] = "1";
-	argv[5] = "1";
+	argv[3] = "C:\\Users\\lihui\\workspace\\github\\GFinder_Plus\\test_data\\predicate_similarity.txt";
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	argv[4] = "-f";
+	argv[5] = "1";
+	argv[6] = "1";
 
 	// top 10
 	TOPK = 100;
@@ -250,6 +252,10 @@ int main(int argc, char *argv[])
 
 	string data_graph_file = argv[1];
 	string query_graph_file = argv[2];
+	string edge_sim_file = argv[3];
+
+	ParsePredicateMatrix::parsePredicateFile(edge_sim_file);
+
 
 	//TOPK = stoi(argv[3]);
 	//NODE_MISS_COST = stoi(argv[4]);
@@ -261,6 +267,7 @@ int main(int argc, char *argv[])
 	cout << endl << "*******************************************************************" << endl;
 	cout << "Data File :" << argv[1] << endl;
 	cout << "Query file:" << argv[2] << endl;
+	cout << "Edge Similarity file:" << argv[3] << endl;
 	cout << "Top-K: " << TOPK << endl;
 	cout << "Missing Node Cost: " << NODE_MISS_COST << endl;
 	cout << "Intermediate Cost: " << BRIDGE_COST << endl;
@@ -290,7 +297,7 @@ int main(int argc, char *argv[])
 
 	cout << "ATTENTION: Finish data index cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
 
-	int count_query_file = atoi(argv[4]);
+	int count_query_file = atoi(argv[5]);
 	count_query_file = 1;
 	//string str_full_limit = argv[5];
 

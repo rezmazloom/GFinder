@@ -35,6 +35,9 @@ inline unsigned long long split(const string &txt, vector<string> &strs, char ch
 	return strs.size();
 }
 
+
+
+
 inline bool sortByLabelAndDegree(int node1, int node2) {
 	if (g_nodes_label_after_change_data_graph[node1] == g_nodes_label_after_change_data_graph[node2])
 		return (g_node_degree_data_graph[node1] < g_node_degree_data_graph[node2]);
