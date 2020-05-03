@@ -746,7 +746,13 @@ inline void single_readQueryGraph(string query_graph_file) {
 			split(line, v, ' ');
 			int node_index = atoi(v[1].c_str());
 			int label_from_file = atoi(v[2].c_str());
-			int actual_label = g_transfer_label_mapping[label_from_file];
+			int actual_label = 0;
+			if (label_from_file < 0) {
+				actual_label = -1;
+			}
+			else {
+				actual_label = g_transfer_label_mapping[label_from_file];
+			}
 
 			g_nodes_label_query_graph[node_index] = actual_label;
 		}

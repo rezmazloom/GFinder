@@ -229,6 +229,8 @@ int main(int argc, char *argv[])
 	argv[1] = "C:\\Users\\lihuil2\\Documents\\DARPA\\AIDA_2.1.0\\data.format";
 	argv[2] = "C:\\Users\\lihuil2\\Documents\\DARPA\\AIDA_2.1.0\\query1A.format";
 
+	argv[1] = "C:\\Users\\lihui\\workspace\\DARPA\\MAA_AIDA_V2.1.0_TA3\\TA3\\Input\\soft_prune\\data.format";
+	argv[2] = "C:\\Users\\lihui\\workspace\\DARPA\\MAA_AIDA_V2.1.0_TA3\\TA3\\Input\\soft_prune\\query3E.format";
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	argv[3] = "-f";
 	argv[4] = "1";
@@ -243,7 +245,7 @@ int main(int argc, char *argv[])
 	DYNAMIC = true;
 	// IS_ONE_HOP_DATA_GRAPH should be equl to 1 or 0
 	// 1 means yes
-	IS_ONE_HOP_DATA_GRAPH = 0;
+	IS_ONE_HOP_DATA_GRAPH = 1;
 	DISTINCT_LABEL = 0;
 
 	string data_graph_file = argv[1];
