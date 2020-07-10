@@ -234,6 +234,11 @@ int main(int argc, char *argv[])
 	argv[2] = "C:\\Users\\lihui\\workspace\\DARPA\\MAA_AIDA_V2.1.0_TA3\\TA3\\Input\\soft_prune\\query3E.format";
 	argv[3] = "C:\\Users\\lihui\\workspace\\github\\GFinder_Plus\\test_data\\predicate_similarity.txt";
 
+
+	argv[1] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\data.format";
+	argv[2] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\query.format";
+	argv[3] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\predicate_similarity.txt";
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	argv[4] = "-f";
 	argv[5] = "1";
