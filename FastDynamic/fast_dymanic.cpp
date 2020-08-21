@@ -235,9 +235,9 @@ int main(int argc, char *argv[])
 	argv[3] = "C:\\Users\\lihui\\workspace\\github\\GFinder_Plus\\test_data\\predicate_similarity.txt";
 
 
-	argv[1] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\data.format";
-	argv[2] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\query.format";
-	argv[3] = "C:\\Users\\lihui\\workspace\\github\\GFinder-Proj\\test_dataset\\predicate_similarity.txt";
+	argv[1] = "C:\\Users\\lihuil2\\Documents\\DARPA\\MAA_AIDA_V2.1.3_TA3\\TA3\\redo\\data.format";
+	argv[2] = "C:\\Users\\lihuil2\\Documents\\DARPA\\MAA_AIDA_V2.1.3_TA3\\TA3\\redo\\Template3_C.gdf.format";
+	argv[3] = "C:\\Users\\lihuil2\\Documents\\DARPA\\MAA_AIDA_V2.1.3_TA3\\TA3\\redo\\predicate_similarity.txt";
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	argv[4] = "-f";

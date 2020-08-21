@@ -777,7 +777,7 @@ struct EdgeType {
 		}
 
 		// hashmap iterator need test
-		float threshold = 0.8;
+		float threshold = 0.3;
 		int total = 0;
 		float total_max_sim = 0;
 		for (auto it = e_type->from_to.begin(); it != e_type->from_to.end(); ++it) {

@@ -15,7 +15,6 @@
 
 #define MIN_SIM 0.3
 #define MISSING_EDGE_THRESHOLD_VALUE 3
-#define MAX_LABEL 20
 #define MAX_TIME 30000
 
 //#define CORE_AND_MAX_NB_FILTER
