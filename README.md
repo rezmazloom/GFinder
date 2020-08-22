@@ -1,6 +1,6 @@
 # GFinder
 
-This is the implementation of paper "".
+This is the implementation of paper "Liu, Lihui, Boxin Du, and Hanghang Tong. "G-Finder: Approximate Attributed Subgraph Matching." 2019 IEEE International Conference on Big Data (Big Data). IEEE, 2019.".
 
 This Project (G-Looker) is implemented on visual studio C++ 2015, windows 10 64 bits.
 The source code is stored in directory "./FastDynamic-edge-type-list-hash"
