@@ -8,9 +8,9 @@
 #include "targetver.h"
 
 #include <stdio.h>
-#include <tchar.h>
+#include <string.h>
+// #include <tchar.h>
 
 #define _SCL_SECURE_NO_WARNINGS
-
 
 // TODO: reference additional headers your program requires here

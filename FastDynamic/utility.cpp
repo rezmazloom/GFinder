@@ -8,20 +8,20 @@
 
 using namespace std;
 
-CUtility* CGlobal::time = new CUtility();
-CUtility* CGlobal::heaptime = new CUtility();
-CUtility* CGlobal::rtreetime = new CUtility();
-CUtility* CGlobal::comparetime = new CUtility();
-CUtility* CGlobal::gamblingtime = new CUtility();
-CUtility* CGlobal::sorttime = new CUtility();
-CUtility* CGlobal::listtime = new CUtility();
-CUtility* CGlobal::rtreequerytime = new CUtility();
-CUtility* CGlobal::maintain = new CUtility();
-CUtility* CGlobal::m_preprocess = new CUtility();
+CUtility *CGlobal::time = new CUtility();
+CUtility *CGlobal::heaptime = new CUtility();
+CUtility *CGlobal::rtreetime = new CUtility();
+CUtility *CGlobal::comparetime = new CUtility();
+CUtility *CGlobal::gamblingtime = new CUtility();
+CUtility *CGlobal::sorttime = new CUtility();
+CUtility *CGlobal::listtime = new CUtility();
+CUtility *CGlobal::rtreequerytime = new CUtility();
+CUtility *CGlobal::maintain = new CUtility();
+CUtility *CGlobal::m_preprocess = new CUtility();
 
 // bool CGlobal::flag = false;
 // bool CGlobal::countSpace = false;
-// 
+//
 // long CUtility::leafIO = 0;
 // long CUtility::indexIO = 0;
 // long CUtility::gambling = 0;
@@ -33,18 +33,18 @@ CUtility* CGlobal::m_preprocess = new CUtility();
 // long CUtility::filter_sky = 0;
 // long CUtility::filter_inobj = 0;
 // long CUtility::filter_endobj = 0;
-// 
+//
 // long CUtility::low_prune = 0;
 // long CUtility::upper_prune = 0;
-// 
-// 
+//
+//
 // long CUtility::u_count = 0;
-// 
-// 
+//
+//
 // long CUtility::round = 0;
 
 CUtility::CUtility()
-	:m_suspended(0.0)
+	: m_suspended(0.0)
 {
 }
 
@@ -52,15 +52,14 @@ CUtility::~CUtility()
 {
 }
 
-
-int gettimeofday(struct timeval * tp, struct timezone * tzp)
+int gettimeofday(struct timeval *tp, struct timezone *tzp)
 {
 	// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
 	// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
-	// until 00:00:00 January 1, 1970 
+	// until 00:00:00 January 1, 1970
 	static const uint64_t EPOCH = ((uint64_t)116444736000000000ULL);
 
-	SYSTEMTIME  system_time;
+	/*SYSTEMTIME  system_time;
 	FILETIME    file_time;
 	uint64_t    time;
 
@@ -70,7 +69,7 @@ int gettimeofday(struct timeval * tp, struct timezone * tzp)
 	time += ((uint64_t)file_time.dwHighDateTime) << 32;
 
 	tp->tv_sec = (long)((time - EPOCH) / 10000000L);
-	tp->tv_usec = (long)(system_time.wMilliseconds * 1000);
+	tp->tv_usec = (long)(system_time.wMilliseconds * 1000);*/
 	return 0;
 }
 
@@ -208,7 +207,6 @@ return true;
 
 
 */
-
 
 /*
 void CUtility::showCurTime( FILE * stream  )

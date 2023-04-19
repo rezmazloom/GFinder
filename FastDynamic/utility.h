@@ -1,7 +1,7 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-
+#include <vector>
 #include <time.h>
 #include <iostream>
 #include <stdio.h>
@@ -10,54 +10,49 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-
-
+#include <ctime>
+#include <time.h>
 
 #ifndef DIMENSION
 #define DIMENSION 2
 #endif
 
-
 #define SPACE_MAX 0.999999
 #define EPSILON 0.0001
-//#define CGlobal::GRID_WIDTH 64
+// #define CGlobal::GRID_WIDTH 64
 #define RECTLEN 0.001
 // #define NDEBUG
 
-
-//int CGlobal::GRID_WIDTH=64;
-// #define ICDE07
-// #define STATISTIC
+// int CGlobal::GRID_WIDTH=64;
+//  #define ICDE07
+//  #define STATISTIC
 
 #define STEP_STA 200
 
-#define MAX_DATA_VALUE  100000
+#define MAX_DATA_VALUE 100000
 
-
-
-#include <Windows.h>
-#include <stdint.h> // portable: uint64_t   MSVC: __int64 
+// #include <Windows.h>
+#include <stdint.h> // portable: uint64_t   MSVC: __int64
 
 // MSVC defines this in winsock2.h!?
-//typedef struct timeval {
+// typedef struct timeval {
 //	long tv_sec;
 //	long tv_usec;
 //} timeval;
 
-int gettimeofday(struct timeval * tp, struct timezone * tzp);
-
-
+int gettimeofday(struct timeval *tp, struct timezone *tzp);
 
 /**
 @author Ying Zhang, Phd Student Student Room K17-501-7
 */
 using namespace std;
-class CUtility {
+class CUtility
+{
 public:
 	CUtility();
 	~CUtility();
-public:
 
+public:
 	static long leafIO;
 	static long indexIO;
 
@@ -65,7 +60,7 @@ public:
 	static long gamblingtrial;
 
 	static long filter_rtree;
-	static long filter_inobj; // filter at the half objects level
+	static long filter_inobj;  // filter at the half objects level
 	static long filter_endobj; // filter at the half objects level
 
 	static long low_prune;
@@ -78,14 +73,13 @@ public:
 	static long round;
 	static bool countSpace;
 
-
 	static long numExtraskylines;
-	static int* getCombination(const int N, const int K, long& length);
-	static bool printCombination(const int N, const int K, char* filename);
+	static int *getCombination(const int N, const int K, long &length);
+	static bool printCombination(const int N, const int K, char *filename);
 	static double combNum(const int N, const int K);
 
-	static void showCurTime(FILE* stream = stderr);
-	static void  findOptFile(const char filename[], char optfile[], int k);
+	static void showCurTime(FILE *stream = stderr);
+	static void findOptFile(const char filename[], char optfile[], int k);
 
 public:
 	// begin to counting
@@ -106,22 +100,21 @@ private:
 	struct timeval qR;
 	// the time suspended
 	double m_suspended;
-
 };
 
 class CGlobal
 {
 public:
-	static CUtility* time;
-	static CUtility* heaptime;
-	static CUtility* rtreetime;
-	static CUtility* comparetime;
-	static CUtility* sorttime;
-	static CUtility* gamblingtime;
-	static CUtility* listtime;
-	static CUtility* rtreequerytime;
-	static CUtility* maintain;
-	static CUtility* m_preprocess;
+	static CUtility *time;
+	static CUtility *heaptime;
+	static CUtility *rtreetime;
+	static CUtility *comparetime;
+	static CUtility *sorttime;
+	static CUtility *gamblingtime;
+	static CUtility *listtime;
+	static CUtility *rtreequerytime;
+	static CUtility *maintain;
+	static CUtility *m_preprocess;
 
 	static bool flag;
 	static bool countSpace;
@@ -138,13 +131,12 @@ inline void CUtility::startCT()
 	gettimeofday(&qStart, NULL);
 }
 
-
 // stop counting
 inline double CUtility::endCT(const bool show)
 {
 	gettimeofday(&qEnd, NULL);
 	double qTime = (double)(qEnd.tv_usec - qStart.tv_usec) / 1000 +
-		(double)(qEnd.tv_sec - qStart.tv_sec) * 1000;
+				   (double)(qEnd.tv_sec - qStart.tv_sec) * 1000;
 
 	qTime -= m_suspended;
 
@@ -163,10 +155,26 @@ inline void CUtility::resume()
 {
 	gettimeofday(&qR, NULL);
 	double qTime = (double)(qR.tv_usec - qS.tv_usec) / 1000 +
-		(double)(qR.tv_sec - qS.tv_sec) * 1000;
+				   (double)(qR.tv_sec - qS.tv_sec) * 1000;
 
 	m_suspended += qTime;
 }
 
+template <typename T>
+inline void print_array(T *arr)
+{
+	int n = sizeof(arr);
+	for (int i = 0; i < n; i++)
+	{
+		std::cout << arr[i] << ' ';
+	}
+}
 
+inline void print_vector(vector<long long> arr)
+{
+	for (auto i : arr)
+	{
+		std::cout << i << ' ';
+	}
+}
 #endif

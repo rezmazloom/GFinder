@@ -4,12 +4,14 @@
 #define DYNAMIC_FAST_FIND_RESULT_H_
 
 #include "enumeration.h"
+#include "utility.h"
 
 extern vector<Result> g_result_heap;
 extern int g_max_cost_in_heap;
 #define MAX_BACK_TRACE 30000000
 
-inline void updateMaxHeap(int cost, vector<long long> & result) {
+inline void updateMaxHeap(int cost, vector<long long> &result)
+{
 	Result n;
 	n.cost = cost;
 	n.result = result;
@@ -20,10 +22,10 @@ inline void updateMaxHeap(int cost, vector<long long> & result) {
 	// add new
 	g_result_heap.push_back(n);
 	push_heap(g_result_heap.begin(), g_result_heap.end(), less<Result>());
-
 }
 
-inline void justPutInHeap(int cost, vector<long long> & result) {
+inline void justPutInHeap(int cost, vector<long long> &result)
+{
 
 	Result n;
 	n.cost = cost;
@@ -34,23 +36,27 @@ inline void justPutInHeap(int cost, vector<long long> & result) {
 }
 
 // a little time consuming, try to improve it
-inline void checkNow(int already_matched_size, vector<int> & cost) {
+inline void checkNow(int already_matched_size, vector<int> &cost)
+{
 
 	int totalCost = 0;
-	for (int i = 0; i < cost.size(); i++) {
+	for (int i = 0; i < cost.size(); i++)
+	{
 		totalCost += cost[i];
 	}
 
 	totalCost += (g_cnt_node_query_graph - already_matched_size) * NODE_MISS_COST;
 
 	vector<long long> res;
-	if (g_result_heap.size() < TOPK) {
+	if (g_result_heap.size() < TOPK)
+	{
 
-		for (int i = 0; i < already_matched_size; i++) {
+		for (int i = 0; i < already_matched_size; i++)
+		{
 			all_mapping[g_matching_order_unit_of_query[i].node] = g_actual_mapping[i];
 		}
 
-		//for (long long i = already_matched_size; i < g_cnt_node_query_graph; i++) //for core
+		// for (long long i = already_matched_size; i < g_cnt_node_query_graph; i++) //for core
 		//	all_mapping[g_matching_order_unit_of_query[i].node] = -1;
 
 		for (long long i = 0; i < g_cnt_node_query_graph; i++)
@@ -59,14 +65,18 @@ inline void checkNow(int already_matched_size, vector<int> & cost) {
 		justPutInHeap(totalCost, res);
 
 		g_max_cost_in_heap = g_result_heap[0].cost;
+		/*print_array(all_mapping);
+		cout << "\\";*/
 	}
-	else if (totalCost < g_result_heap[0].cost) {
+	else if (totalCost < g_result_heap[0].cost)
+	{
 
-		for (int i = 0; i < already_matched_size; i++) {
+		for (int i = 0; i < already_matched_size; i++)
+		{
 			all_mapping[g_matching_order_unit_of_query[i].node] = g_actual_mapping[i];
 		}
 
-		//for (long long i = already_matched_size; i < g_cnt_node_query_graph; i++) //for core
+		// for (long long i = already_matched_size; i < g_cnt_node_query_graph; i++) //for core
 		//	all_mapping[g_matching_order_unit_of_query[i].node] = -1;
 
 		for (long long i = 0; i < g_cnt_node_query_graph; i++)
@@ -74,44 +84,44 @@ inline void checkNow(int already_matched_size, vector<int> & cost) {
 
 		updateMaxHeap(totalCost, res);
 		g_max_cost_in_heap = g_result_heap[0].cost;
+		/*print_array(all_mapping);
+		cout << "\\";*/
 	}
-
 }
 
-
-
-
-
-
-inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * already_mapping_flag_data) {
+inline double LeafMappingEnumeration(double &found_mapping_enumeration, int *already_mapping_flag_data)
+{
 
 	/*
-	* This function only enumerates all the results. Not tuned for performance at all.
-	*/
+	 * This function only enumerates all the results. Not tuned for performance at all.
+	 */
 
-	//step one: get all actual nodes in leaf
-	//step two: get the candidates for all nodes.
-	//step three: enumerate results until reaching the limit
+	// step one: get all actual nodes in leaf
+	// step two: get the candidates for all nodes.
+	// step three: enumerate results until reaching the limit
 
-	//sort the LLC sets
-	long long nec_set_size = NEC_set_by_label_index.size() - 1;// -1 is because the last element is actually redunant
-	for (long long i = 0; i < nec_set_size; i++) {
+	// sort the LLC sets
+	long long nec_set_size = NEC_set_by_label_index.size() - 1; // -1 is because the last element is actually redunant
+	for (long long i = 0; i < nec_set_size; i++)
+	{
 		long long cand_sum = 0;
 		long long node_sum = 0;
 		long long start = NEC_set_by_label_index[i].second;
 		long long end = NEC_set_by_label_index[i + 1].second;
-		for (long long j = start; j < end; j++) {
+		for (long long j = start; j < end; j++)
+		{
 			long long parent_id = NEC_set_array[j].parent_id;
 			long long sum = NEC_set_array[j].sum;
 			long long represent_node = NEC_set_array[j].represent_node;
 			long long parent_pos = g_cand_pos_in_indexset[parent_id];
-			CPINode & unit = indexSet[represent_node];
-			for (long long it = 0; it < unit.size_of_index[parent_pos]; it++) {
+			CPINode &unit = indexSet[represent_node];
+			for (long long it = 0; it < unit.size_of_index[parent_pos]; it++)
+			{
 				long long can = unit.candidates[unit.index_N_up_u[parent_pos][it].index];
 				if (!already_mapping_flag_data[can])
 					cand_sum++;
 			}
-			node_sum += sum; //moved up
+			node_sum += sum; // moved up
 		}
 		if (cand_sum < node_sum)
 			return 0;
@@ -122,30 +132,32 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 
 	//============= get all leaf nodes and their candidates
 	leaf_necs_idx = 0;
-	vector <long long> leaf_cands;
-	vector < pair<long long, long long> > leaf_cands_info;
+	vector<long long> leaf_cands;
+	vector<pair<long long, long long>> leaf_cands_info;
 
-	for (long long i = 0; i < nec_set_size; i++) {
+	for (long long i = 0; i < nec_set_size; i++)
+	{
 
 		long long label_index = NEC_set_ranking[i].first;
 		long long node_sum = NEC_set_ranking[i].second.first;
 		double count_local_mapping_label = 0;
 
-		if (node_sum == 1) {//==== CASE ONE : there is only one node in this nec set with this label =====
+		if (node_sum == 1)
+		{ //==== CASE ONE : there is only one node in this nec set with this label =====
 
 			long long start = NEC_set_by_label_index[label_index].second;
 			long long represent_node = NEC_set_array[start].represent_node;
 
 			long long start_l = leaf_cands.size();
 
-			CPINode & unit = indexSet[represent_node];
+			CPINode &unit = indexSet[represent_node];
 			long long parent_id = NEC_set_array[start].parent_id;
 			long long parent_pos = g_cand_pos_in_indexset[parent_id];
 
-
 			leaf_necs[leaf_necs_idx++] = represent_node;
 
-			for (long long it = 0; it < unit.size_of_index[parent_pos]; it++) {
+			for (long long it = 0; it < unit.size_of_index[parent_pos]; it++)
+			{
 				long long can = unit.candidates[unit.index_N_up_u[parent_pos][it].index];
 				if (already_mapping_flag_data[can] == 0)
 					leaf_cands.push_back(can);
@@ -155,25 +167,27 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 
 			leaf_cands_info.push_back(make_pair(start_l, end_l));
 
-			count_local_mapping_label = NEC_set_ranking[i].second.second; //we have computed this one in the last step
-			if (count_local_mapping_label == 0) {
+			count_local_mapping_label = NEC_set_ranking[i].second.second; // we have computed this one in the last step
+			if (count_local_mapping_label == 0)
+			{
 
 				return 0;
 			}
-
 		}
-		else {//==== CASE TWO : more than one node, and possible more than one start nodes (nec_units)
+		else
+		{ //==== CASE TWO : more than one node, and possible more than one start nodes (nec_units)
 
 			long long start = NEC_set_by_label_index[label_index].second;
 			long long end = NEC_set_by_label_index[label_index + 1].second;
-			long long nec_size = end - start; //number of nec this label has
+			long long nec_size = end - start; // number of nec this label has
 
 			for (long long j = start, x = 0; j < end; j++, x++)
 				v_nec_count[x] = make_pair(j, NEC_set_array[j].sum);
 			sort(v_nec_count, v_nec_count + nec_size, sort_by_second_element);
 			nec_count_set_size = nec_size;
 
-			for (long long j = 0; j < nec_size; j++) {
+			for (long long j = 0; j < nec_size; j++)
+			{
 				long long nec_index = v_nec_count[j].first;
 				long long nec_count = v_nec_count[j].second;
 				nec_count_set[j] = nec_count; // the sum of nodes that the nec representative stands for
@@ -182,9 +196,10 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 				long long represent_node = NEC_set_array[nec_index].represent_node;
 				long long parent_pos = g_cand_pos_in_indexset[parent_id];
 
-				CPINode & unit = indexSet[represent_node];
+				CPINode &unit = indexSet[represent_node];
 				long long start = leaf_cands.size();
-				for (long long it = 0; it < unit.size_of_index[parent_pos]; it++) {
+				for (long long it = 0; it < unit.size_of_index[parent_pos]; it++)
+				{
 					long long can = unit.candidates[unit.index_N_up_u[parent_pos][it].index];
 					if (already_mapping_flag_data[can] == 0)
 						leaf_cands.push_back(can);
@@ -196,8 +211,9 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 
 				leaf_necs[leaf_necs_idx++] = represent_node;
 				leaf_cands_info.push_back(make_pair(start, end));
-				NEC_Node * next = NEC_Node_array[represent_node].nextAddress;
-				while (next != NULL) {
+				NEC_Node *next = NEC_Node_array[represent_node].nextAddress;
+				while (next != NULL)
+				{
 					leaf_necs[leaf_necs_idx++] = next->node;
 					leaf_cands_info.push_back(make_pair(start, end));
 					next = next->nextAddress;
@@ -212,54 +228,59 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 	//		cerr << leaf_necs[i] << " ";
 	//	cerr << endl;
 
-
 	SearchIterator *search_iterator_leaf = new SearchIterator[g_cnt_node_query_graph];
-	long long * actual_mapping_leaf = new long long[g_cnt_node_query_graph];
+	long long *actual_mapping_leaf = new long long[g_cnt_node_query_graph];
 	for (long long i = 0; i < g_cnt_node_query_graph; i++)
 		search_iterator_leaf[i].address = NULL;
 
 	//=========== start to mapping =======================================================
 	{
-		SearchIterator * temp_search_iterator;
+		SearchIterator *temp_search_iterator;
 		long long data_id;
 		long long current_leaf_query_index = 0;
 		long long leaf_sequence_size = leaf_necs_idx;
 
-		while (true) {
+		while (true)
+		{
 
 			//			cerr << " current leaf query index is " << current_leaf_query_index << " out of " << leaf_sequence_size << endl;
 
-			if (current_leaf_query_index == -1)//"No MATCH found!"
+			if (current_leaf_query_index == -1) //"No MATCH found!"
 				break;
 
-			if (current_leaf_query_index == leaf_sequence_size) { // found a mapping
+			if (current_leaf_query_index == leaf_sequence_size)
+			{ // found a mapping
 
 				found_mapping_enumeration++;
 
 				//				cerr << "found mapping " << found_mapping_enumeration << endl;
 
-				if (g_isTree) {
-					for (long long i = 0; i < g_residual_tree_match_seq_index; i++) //for tree if existed
+				if (g_isTree)
+				{
+					for (long long i = 0; i < g_residual_tree_match_seq_index; i++) // for tree if existed
 						all_mapping[g_residual_tree_match_seq_query[i]] = actual_mapping_tree[i];
-					for (long long i = 0; i < leaf_necs_idx; i++) //for leaf if existed
+					for (long long i = 0; i < leaf_necs_idx; i++) // for leaf if existed
 						all_mapping[leaf_necs[i]] = actual_mapping_leaf[i];
 				}
-				else {
-					for (long long i = 0; i < g_matching_order_size_of_core; i++) //for core
+				else
+				{
+					for (long long i = 0; i < g_matching_order_size_of_core; i++) // for core
 						all_mapping[g_matching_order_unit_of_query[i].node] = g_actual_mapping[i];
-					for (long long i = 0; i < g_residual_tree_match_seq_index; i++) //for tree if existed
+					for (long long i = 0; i < g_residual_tree_match_seq_index; i++) // for tree if existed
 						all_mapping[g_residual_tree_match_seq_query[i]] = actual_mapping_tree[i];
-					for (long long i = 0; i < leaf_necs_idx; i++) //for leaf if existed
+					for (long long i = 0; i < leaf_necs_idx; i++) // for leaf if existed
 						all_mapping[leaf_necs[i]] = actual_mapping_leaf[i];
 				}
 
 				cout << "####### Tree Exact Mapping " << found_mapping_enumeration << " => ";
-				for (long long i = 0; i < g_cnt_node_query_graph;i++)
+				for (long long i = 0; i < g_cnt_node_query_graph; i++)
 					cout << i << ":" << all_mapping[i] << " ";
 				cout << endl;
 
-				if (found_mapping_enumeration >= LIMIT) {
-					while (current_leaf_query_index != 0) {
+				if (found_mapping_enumeration >= LIMIT)
+				{
+					while (current_leaf_query_index != 0)
+					{
 						current_leaf_query_index--;
 						already_mapping_flag_data[actual_mapping_leaf[current_leaf_query_index]] = 0;
 						search_iterator_leaf[current_leaf_query_index].address = NULL;
@@ -275,24 +296,28 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 			char back_trace = 0;
 			temp_search_iterator = &search_iterator_leaf[current_leaf_query_index];
 
-			if (temp_search_iterator->address == NULL) { // has no value
+			if (temp_search_iterator->address == NULL)
+			{ // has no value
 
-				temp_search_iterator->address = new CPICell();//actual_mapping_leaf;//meaningless. just for giving it a value for code reusing
+				temp_search_iterator->address = new CPICell(); // actual_mapping_leaf;//meaningless. just for giving it a value for code reusing
 				temp_search_iterator->address_size = leaf_cands_info[current_leaf_query_index].second;
 
-				if (temp_search_iterator->address_size == 0) {
-					temp_search_iterator->address = NULL;//clear the temp_address and it index position
-					current_leaf_query_index--; // roll back one node in the matching sequence
+				if (temp_search_iterator->address_size == 0)
+				{
+					temp_search_iterator->address = NULL; // clear the temp_address and it index position
+					current_leaf_query_index--;			  // roll back one node in the matching sequence
 					if (current_leaf_query_index != 0)
 						already_mapping_flag_data[actual_mapping_leaf[current_leaf_query_index]] = 0;
 					continue;
 				}
 				temp_search_iterator->address_pos = leaf_cands_info[current_leaf_query_index].first;
 			}
-			else { // has value
+			else
+			{										 // has value
 				temp_search_iterator->address_pos++; // update the index by one
-				if (temp_search_iterator->address_pos == temp_search_iterator->address_size) {
-					temp_search_iterator->address = NULL;//clear the temp_address and it index position
+				if (temp_search_iterator->address_pos == temp_search_iterator->address_size)
+				{
+					temp_search_iterator->address = NULL; // clear the temp_address and it index position
 					current_leaf_query_index--;
 					if (current_leaf_query_index != -1)
 						already_mapping_flag_data[actual_mapping_leaf[current_leaf_query_index]] = 0;
@@ -300,30 +325,35 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 				}
 			}
 
-			back_trace = 0; //actually, this line is not necessary, when processed here, the back_trace must be false...
+			back_trace = 0; // actually, this line is not necessary, when processed here, the back_trace must be false...
 
-			while (true) {
-				//break, until find a mapping for this node
-				//or cannot find a mapping after examining all candidates
+			while (true)
+			{
+				// break, until find a mapping for this node
+				// or cannot find a mapping after examining all candidates
 
 				data_id = leaf_cands[temp_search_iterator->address_pos];
 
-				if (data_id != -1 && already_mapping_flag_data[data_id] == 0) { //first check: this id should have not been mapped before
+				if (data_id != -1 && already_mapping_flag_data[data_id] == 0)
+				{ // first check: this id should have not been mapped before
 					actual_mapping_leaf[current_leaf_query_index] = data_id;
 					already_mapping_flag_data[data_id] = 1;
 					break;
 				}
-				else { //mapping NOT OK!
-					temp_search_iterator->address_pos++;//not ok, then we need the next result
-					if (temp_search_iterator->address_pos == temp_search_iterator->address_size) { // no more data id, so cannot find a match for this query node
+				else
+				{										 // mapping NOT OK!
+					temp_search_iterator->address_pos++; // not ok, then we need the next result
+					if (temp_search_iterator->address_pos == temp_search_iterator->address_size)
+					{					// no more data id, so cannot find a match for this query node
 						back_trace = 1; // indicate that no result is being found, so we need to trace back_trace
 						break;
 					}
 				}
-			} //end while
-			if (back_trace) { //BACK TRACE
+			} // end while
+			if (back_trace)
+			{ // BACK TRACE
 				back_trace = 0;
-				temp_search_iterator->address = NULL;//clear the temp_address and it index position
+				temp_search_iterator->address = NULL; // clear the temp_address and it index position
 				current_leaf_query_index--;
 				if (current_leaf_query_index != -1)
 					already_mapping_flag_data[actual_mapping_leaf[current_leaf_query_index]] = 0;
@@ -335,28 +365,29 @@ inline double LeafMappingEnumeration(double & found_mapping_enumeration, int * a
 
 	delete search_iterator_leaf;
 	return found_mapping_enumeration;
-
 }
 
-
-inline void find_inexact_result() {
+inline void find_inexact_result()
+{
 	bool exact = false;
 	double found_mapping_enumeration = 0;
-	MatchOrderUnit * unit;
-	SearchIterator * temp_search_unit;
+	MatchOrderUnit *unit;
+	SearchIterator *temp_search_unit;
 	long long current_id;
 	long long parent_id;
-	CPINode * index_unit_current;
+	CPINode *index_unit_current;
 	long long pos;
 	vector<int> cost;
 	long long data_id;
 	char mapping_OK;
-	int * already_mapping_flag_data = g_good_count_data_graph;
+	int *already_mapping_flag_data = g_good_count_data_graph;
 	long long back_trace_time = 0;
 
-	for (long long i = 0; i < indexSet[g_root_node_id_of_query].size; i++) {
+	for (long long i = 0; i < indexSet[g_root_node_id_of_query].size; i++)
+	{
 		long long root_cand_id = indexSet[g_root_node_id_of_query].candidates[i];
-		if (root_cand_id == -1) {
+		if (root_cand_id == -1)
+		{
 			continue;
 		}
 
@@ -368,21 +399,25 @@ inline void find_inexact_result() {
 		long long already_matched_size = 1; // the current query index of the query sequence, because 0 is the root has already been matched
 		int cost_now = 0;
 
-		while (true) {
-			if (already_matched_size == 0)//"No MATCH found!"
+		while (true)
+		{
+			if (already_matched_size == 0) //"No MATCH found!"
 				break;
-			if (already_matched_size == g_matching_order_size_of_core) { // found a mapping
+			if (already_matched_size == g_matching_order_size_of_core)
+			{ // found a mapping
 
-				if (g_residual_tree_match_seq_index == 0) {
+				if (g_residual_tree_match_seq_index == 0)
+				{
 
-					if (NEC_leaf_mapping_pair_index != 0 && !DYNAMIC) {
+					if (NEC_leaf_mapping_pair_index != 0 && !DYNAMIC)
+					{
 						LeafMappingEnumeration(found_mapping_enumeration, already_mapping_flag_data);
 					}
 					else
 
 					{
 
-						for (long long i = 0; i < g_matching_order_size_of_core; i++) //for core
+						for (long long i = 0; i < g_matching_order_size_of_core; i++) // for core
 							all_mapping[g_matching_order_unit_of_query[i].node] = g_actual_mapping[i];
 
 						found_mapping_enumeration++;
@@ -409,8 +444,9 @@ inline void find_inexact_result() {
 						checkNow(already_matched_size, cost);
 					}
 				}
-				else {
-					//getResidualTreeMapping_Enumeration(found_mapping_enumeration);
+				else
+				{
+					// getResidualTreeMapping_Enumeration(found_mapping_enumeration);
 				}
 
 				// max output match
@@ -443,11 +479,14 @@ inline void find_inexact_result() {
 			parent_id = g_matching_order_unit_of_query[unit->pt_index].node;
 			index_unit_current = &indexSet[current_id];
 
-			if (g_result_heap.size() >= TOPK) {
-				if (g_max_cost_in_heap == 0) {
+			if (g_result_heap.size() >= TOPK)
+			{
+				if (g_max_cost_in_heap == 0)
+				{
 					temp_search_unit->address = NULL;
 
-					while (already_matched_size != 0) {
+					while (already_matched_size != 0)
+					{
 						already_matched_size--;
 						already_mapping_flag_data[g_actual_mapping[already_matched_size]] = 0;
 						search_iterator[already_matched_size].address = NULL;
@@ -456,7 +495,8 @@ inline void find_inexact_result() {
 					return;
 				}
 
-				if ((g_cnt_node_query_graph - g_matching_order_size_of_core) * NODE_MISS_COST >= g_max_cost_in_heap) {
+				if ((g_cnt_node_query_graph - g_matching_order_size_of_core) * NODE_MISS_COST >= g_max_cost_in_heap)
+				{
 					// backtrace
 					temp_search_unit->address = NULL;
 					already_matched_size--;
@@ -466,7 +506,8 @@ inline void find_inexact_result() {
 					continue;
 				}
 
-				if (cost_now > g_max_cost_in_heap) {
+				if (cost_now > g_max_cost_in_heap)
+				{
 					// backtrace
 					temp_search_unit->address = NULL;
 					already_matched_size--;
@@ -477,23 +518,23 @@ inline void find_inexact_result() {
 				}
 			}
 
-
 			long long parent_pos_index = g_cand_pos_in_indexset[parent_id];
 
-			if (temp_search_unit->address == NULL) { // has no value
+			if (temp_search_unit->address == NULL)
+			{ // has no value
 
 				temp_search_unit->address = index_unit_current->index_N_up_u[parent_pos_index];
 				temp_search_unit->address_size = index_unit_current->size_of_index[parent_pos_index];
 
-				if (temp_search_unit->address_size == 0) {
-					temp_search_unit->address = NULL;//clear the temp_address and it index position
-					already_matched_size--; // roll back one node in the matching sequence
+				if (temp_search_unit->address_size == 0)
+				{
+					temp_search_unit->address = NULL; // clear the temp_address and it index position
+					already_matched_size--;			  // roll back one node in the matching sequence
 					cost_now = cost_now - cost[cost.size() - 1];
 					cost.pop_back();
 
-
-
-					if (already_matched_size != 0) {
+					if (already_matched_size != 0)
+					{
 						already_mapping_flag_data[g_actual_mapping[already_matched_size]] = 0;
 					}
 
@@ -501,11 +542,13 @@ inline void find_inexact_result() {
 				}
 				temp_search_unit->address_pos = 0;
 			}
-			else { // has value
+			else
+			{									 // has value
 				temp_search_unit->address_pos++; // update the index by one
 												 // iterate all but not find
-				if (temp_search_unit->address_pos == temp_search_unit->address_size) {
-					temp_search_unit->address = NULL;//clear the temp_address and it index position
+				if (temp_search_unit->address_pos == temp_search_unit->address_size)
+				{
+					temp_search_unit->address = NULL; // clear the temp_address and it index position
 					already_matched_size--;
 					cost_now = cost_now - cost[cost.size() - 1];
 					cost.pop_back();
@@ -515,11 +558,11 @@ inline void find_inexact_result() {
 				}
 			}
 
-			back_trace = 0; //actually, this line is not necessary, when processed here, the back_trace must be false...
-
+			back_trace = 0; // actually, this line is not necessary, when processed here, the back_trace must be false...
 
 			// iterate inside a cpi
-			while (true) {
+			while (true)
+			{
 				pos = index_unit_current->index_N_up_u[g_cand_pos_in_indexset[parent_id]][temp_search_unit->address_pos].index;
 				int bridge_cost = index_unit_current->index_N_up_u[g_cand_pos_in_indexset[parent_id]][temp_search_unit->address_pos].bridge_length - 1;
 				bridge_cost = bridge_cost * BRIDGE_COST;
@@ -531,52 +574,68 @@ inline void find_inexact_result() {
 				// add this
 				temp_search_unit->node_id = data_id;
 
+				if (!already_mapping_flag_data[data_id])
+				{ // first check: this id should have not been mapped before
 
-				if (!already_mapping_flag_data[data_id]) { //first check: this id should have not been mapped before
-
-					if (unit->nte_length) { //second check: check and validate the nontree edge
+					if (unit->nte_length)
+					{ // second check: check and validate the nontree edge
 						int unmatch = 0;
 						// check all neighbor
-						for (long long j = unit->start_pos; j < unit->start_pos + unit->nte_length; j++) {
+						for (long long j = unit->start_pos; j < unit->start_pos + unit->nte_length; j++)
+						{
 
-							if (exact) {
+							if (exact)
+							{
 								// exact condition
-								if (SIZEOK == 1) {
-									if (g_data_edge_matrix[data_id * SIZE_OF_EDGE_MATRIX + g_actual_mapping[nte_array_for_matching_unit[j]]] == 0) {
+								if (SIZEOK == 1)
+								{
+									if (g_data_edge_matrix[data_id * SIZE_OF_EDGE_MATRIX + g_actual_mapping[nte_array_for_matching_unit[j]]] == 0)
+									{
 										mapping_OK = 0;
 										break;
 									}
 								}
-								else {
-									if (g_data_edge_matrix[(data_id % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (g_actual_mapping[nte_array_for_matching_unit[j]] % SIZE_OF_EDGE_MATRIX)] == 0) {
+								else
+								{
+									if (g_data_edge_matrix[(data_id % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (g_actual_mapping[nte_array_for_matching_unit[j]] % SIZE_OF_EDGE_MATRIX)] == 0)
+									{
 										mapping_OK = 0;
 										break;
 									}
-									else {
-										//validate the non tree edge by querying the edgeIndex
-										if (!g_hash_table[data_id]->query(g_actual_mapping[nte_array_for_matching_unit[j]])) {
+									else
+									{
+										// validate the non tree edge by querying the edgeIndex
+										if (!g_hash_table[data_id]->query(g_actual_mapping[nte_array_for_matching_unit[j]]))
+										{
 											mapping_OK = 0;
 											break;
 										}
 									}
 								}
-
 							}
-							else {
-								if (IS_ONE_HOP_DATA_GRAPH > 0) {
+							else
+							{
+								if (IS_ONE_HOP_DATA_GRAPH > 0)
+								{
 									// this is one hop
-									if (SIZEOK == 1) {
-										if (g_data_edge_matrix[data_id * SIZE_OF_EDGE_MATRIX + g_actual_mapping[nte_array_for_matching_unit[j]]] == 0) {
+									if (SIZEOK == 1)
+									{
+										if (g_data_edge_matrix[data_id * SIZE_OF_EDGE_MATRIX + g_actual_mapping[nte_array_for_matching_unit[j]]] == 0)
+										{
 											unmatch++;
 										}
 									}
-									else {
-										if (g_data_edge_matrix[(data_id % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (g_actual_mapping[nte_array_for_matching_unit[j]] % SIZE_OF_EDGE_MATRIX)] == 0) {
+									else
+									{
+										if (g_data_edge_matrix[(data_id % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (g_actual_mapping[nte_array_for_matching_unit[j]] % SIZE_OF_EDGE_MATRIX)] == 0)
+										{
 											unmatch++;
 										}
-										else {
-											//validate the non tree edge by querying the edgeIndex
-											if (!g_hash_table[data_id]->query(g_actual_mapping[nte_array_for_matching_unit[j]])) {
+										else
+										{
+											// validate the non tree edge by querying the edgeIndex
+											if (!g_hash_table[data_id]->query(g_actual_mapping[nte_array_for_matching_unit[j]]))
+											{
 												unmatch++;
 											}
 										}
@@ -584,53 +643,53 @@ inline void find_inexact_result() {
 
 									// check wheter edge match
 
-									//int data_edge_from_id = data_id;
-									//int query_edge_from_id = current_id;
-									//int data_edge_to_id = g_actual_mapping[nte_array_for_matching_unit[j]];
-									//int query_edge_to_id = nte_array_for_matching_unit[j];
-									// if check here, should use hasmap<string, id>
-									// id should be decide in backwardprune
-
+									// int data_edge_from_id = data_id;
+									// int query_edge_from_id = current_id;
+									// int data_edge_to_id = g_actual_mapping[nte_array_for_matching_unit[j]];
+									// int query_edge_to_id = nte_array_for_matching_unit[j];
+									//  if check here, should use hasmap<string, id>
+									//  id should be decide in backwardprune
 								}
-								else {
+								else
+								{
 
 									long long neigborId = g_actual_mapping[nte_array_for_matching_unit[j]];
 
-
-									if (g_adj_list_one_hop_distance_data_graph[data_id].query(neigborId)) {
+									if (g_adj_list_one_hop_distance_data_graph[data_id].query(neigborId))
+									{
 										int dis = 1;
 										bridge_cost += ((dis - 1) * BRIDGE_COST);
 									}
-									else if (g_adj_list_two_hop_distance_data_graph[data_id].query(neigborId)) {
+									else if (g_adj_list_two_hop_distance_data_graph[data_id].query(neigborId))
+									{
 										int dis = 2;
 										bridge_cost += ((dis - 1) * BRIDGE_COST);
 									}
-									else {
+									else
+									{
 										unmatch++;
 									}
-
-
 								}
-
 							}
-
 						}
 
-						if (!exact) {
+						if (!exact)
+						{
 
-							if (unmatch > MISSING_EDGE_THRESHOLD_VALUE) {
+							if (unmatch > MISSING_EDGE_THRESHOLD_VALUE)
+							{
 								mapping_OK = 0;
-								//break; should not break
+								// break; should not break
 							}
 							bridge_cost += (unmatch * 1.0 / unit->nte_length) * EDGE_MISSING_COST;
 						}
 					}
-
 				}
 				else
 					mapping_OK = 0;
 
-				if (mapping_OK) {
+				if (mapping_OK)
+				{
 					g_actual_mapping[already_matched_size] = data_id;
 					g_cand_pos_in_indexset[current_id] = pos;
 					already_mapping_flag_data[data_id] = 1;
@@ -639,40 +698,47 @@ inline void find_inexact_result() {
 
 					break;
 				}
-				else { //mapping NOT OK!
-					temp_search_unit->address_pos++;//not ok, then we need the next result
-					if (temp_search_unit->address_pos == temp_search_unit->address_size) { // no more data id, so cannot find a match for this query node
+				else
+				{									 // mapping NOT OK!
+					temp_search_unit->address_pos++; // not ok, then we need the next result
+					if (temp_search_unit->address_pos == temp_search_unit->address_size)
+					{					// no more data id, so cannot find a match for this query node
 						back_trace = 1; // indicate that no result is being found, so we need to trace back_trace
 						break;
 					}
 				}
 
+			} // end while
+			  //  not find, back_trace is zero
 
-			} //end while
-			  // not find, back_trace is zero
+			if (back_trace)
+			{ // BACK TRACE
 
-			if (back_trace) { //BACK TRACE
-
-							  //----------------------------//------------------------------------
+				//----------------------------//------------------------------------
 #ifdef PARTIAL_MATCHING
-							  // record the max partial match
-				if (already_matched_size > g_maxPartialNum) {
+			  //  record the max partial match
+				if (already_matched_size > g_maxPartialNum)
+				{
 					g_maxPartialNum = already_matched_size;
 					// record the match
 					// partialMapping->clear();
 
-					for (long long i = 0; i < g_matching_order_size_of_core; i++) {
-						if (already_mapping_flag_data[g_actual_mapping[i]]) {
+					for (long long i = 0; i < g_matching_order_size_of_core; i++)
+					{
+						if (already_mapping_flag_data[g_actual_mapping[i]])
+						{
 							all_mapping[g_matching_order_unit_of_query[i].node] = g_actual_mapping[i];
 						}
 					}
 
-					//if (branchControl(all_mapping)) {
+					// if (branchControl(all_mapping)) {
 					found_mapping_enumeration++;
 					// print partial mapping
 					cout << "||||||||||||| Partial Mapping length " << already_matched_size << " :" << found_mapping_enumeration << " => ";
-					for (long long i = 0; i < g_matching_order_size_of_core; i++) {
-						if (all_mapping[i] >= 0) {
+					for (long long i = 0; i < g_matching_order_size_of_core; i++)
+					{
+						if (all_mapping[i] >= 0)
+						{
 							cout << i << ":" << all_mapping[i] << " ";
 						}
 					}
@@ -684,7 +750,7 @@ inline void find_inexact_result() {
 				//------------------------------------
 
 				back_trace = 0;
-				temp_search_unit->address = NULL;//clear the temp_address and it index position
+				temp_search_unit->address = NULL; // clear the temp_address and it index position
 				already_matched_size--;
 				already_mapping_flag_data[g_actual_mapping[already_matched_size]] = 0;
 
@@ -695,14 +761,15 @@ inline void find_inexact_result() {
 
 				back_trace_time++;
 
-
-
 				int _a = back_trace_time % 100000;
-				if (_a == 0) {
+				if (_a == 0)
+				{
 					double duration = (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC;
-					if (duration > MAX_TIME) {
+					if (duration > MAX_TIME)
+					{
 						search_iterator[already_matched_size].address = NULL;
-						while (already_matched_size != 0) {
+						while (already_matched_size != 0)
+						{
 							already_matched_size--;
 							already_mapping_flag_data[g_actual_mapping[already_matched_size]] = 0;
 							search_iterator[already_matched_size].address = NULL;
@@ -723,82 +790,100 @@ inline void find_inexact_result() {
 				return;
 
 				}*/
-
 			}
-			else {
+			else
+			{
 				already_matched_size++;
 			}
-
 		}
 		//===========================================================================================
 		already_mapping_flag_data[root_cand_id] = 0;
 	}
 	return;
-
 }
 
-
-inline int bridge(long long from, long long to) {
-	for (long long j = g_nodes_neighbors_start_position_data_graph[from]; j < g_nodes_neighbors_start_position_data_graph[from + 1]; j++) {
+inline int bridge(long long from, long long to)
+{
+	for (long long j = g_nodes_neighbors_start_position_data_graph[from]; j < g_nodes_neighbors_start_position_data_graph[from + 1]; j++)
+	{
 		long long neighbor = g_nodes_neighbors_list_of_edge_type_data_graph[j].node_id;
 
-		if (SIZEOK == 1) {
-			if (g_data_edge_matrix[neighbor * SIZE_OF_EDGE_MATRIX + to] == 0) {
+		if (SIZEOK == 1)
+		{
+			if (g_data_edge_matrix[neighbor * SIZE_OF_EDGE_MATRIX + to] == 0)
+			{
 				continue;
 			}
-			else {
+			else
+			{
 				return neighbor;
 			}
 		}
-		else {
-			if (g_data_edge_matrix[(neighbor % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (to % SIZE_OF_EDGE_MATRIX)] == 0) {
+		else
+		{
+			if (g_data_edge_matrix[(neighbor % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (to % SIZE_OF_EDGE_MATRIX)] == 0)
+			{
 				continue;
 			}
-			else {
-				//validate the non tree edge by querying the edgeIndex
-				if (g_hash_table[neighbor]->query(to)) {
+			else
+			{
+				// validate the non tree edge by querying the edgeIndex
+				if (g_hash_table[neighbor]->query(to))
+				{
 					return neighbor;
 				}
 			}
 		}
-
 	}
 	return -1;
 }
 
-inline int adj_check(int neighbor, int to) {
-	if (SIZEOK == 1) {
-		if (g_data_edge_matrix[neighbor * SIZE_OF_EDGE_MATRIX + to] == 0) {
+inline int adj_check(int neighbor, int to)
+{
+	if (SIZEOK == 1)
+	{
+		if (g_data_edge_matrix[neighbor * SIZE_OF_EDGE_MATRIX + to] == 0)
+		{
 			return -1;
 		}
-		else {
+		else
+		{
 			return neighbor;
 		}
 	}
-	else {
-		if (g_data_edge_matrix[(neighbor % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (to % SIZE_OF_EDGE_MATRIX)] == 0) {
+	else
+	{
+		if (g_data_edge_matrix[(neighbor % SIZE_OF_EDGE_MATRIX) * SIZE_OF_EDGE_MATRIX + (to % SIZE_OF_EDGE_MATRIX)] == 0)
+		{
 			return -1;
 		}
-		else {
-			//validate the non tree edge by querying the edgeIndex
-			if (g_hash_table[neighbor]->query(to)) {
+		else
+		{
+			// validate the non tree edge by querying the edgeIndex
+			if (g_hash_table[neighbor]->query(to))
+			{
 				return neighbor;
 			}
-			else {
+			else
+			{
 				return -1;
 			}
 		}
 	}
 }
 
-inline vector<long long> bridge3(long long from, long long to) {
-	for (long long j = g_nodes_neighbors_start_position_data_graph[from]; j < g_nodes_neighbors_start_position_data_graph[from + 1]; j++) {
+inline vector<long long> bridge3(long long from, long long to)
+{
+	for (long long j = g_nodes_neighbors_start_position_data_graph[from]; j < g_nodes_neighbors_start_position_data_graph[from + 1]; j++)
+	{
 		long long neighbor = g_nodes_neighbors_list_of_edge_type_data_graph[j].node_id;
 
-		for (long long three = g_nodes_neighbors_start_position_data_graph[neighbor]; three < g_nodes_neighbors_start_position_data_graph[neighbor + 1]; three++) {
+		for (long long three = g_nodes_neighbors_start_position_data_graph[neighbor]; three < g_nodes_neighbors_start_position_data_graph[neighbor + 1]; three++)
+		{
 			long long threeNeighbor = g_nodes_neighbors_list_of_edge_type_data_graph[three].node_id;
 
-			if (adj_check(threeNeighbor, to)) {
+			if (adj_check(threeNeighbor, to))
+			{
 				vector<long long> res;
 				res.push_back(neighbor);
 				res.push_back(threeNeighbor);
@@ -810,14 +895,18 @@ inline vector<long long> bridge3(long long from, long long to) {
 	return empty;
 }
 
-inline void output_result() {
+inline void output_result()
+{
 	vector<long long> intermediate_node;
-	for (int i = 0; i < g_result_heap.size(); i++) {
+	for (int i = 0; i < g_result_heap.size(); i++)
+	{
 
 		Result r = g_result_heap[i];
 
-		if (IS_ONE_HOP_DATA_GRAPH > 0) {
-			for (int i = 0; i < r.result.size(); i++) {
+		if (IS_ONE_HOP_DATA_GRAPH > 0)
+		{
+			for (int i = 0; i < r.result.size(); i++)
+			{
 				cout << i << ":" << r.result[i] << " ";
 			}
 			cout << "   cost: " << r.cost << endl;
@@ -826,23 +915,28 @@ inline void output_result() {
 		}
 
 		intermediate_node.clear();
-		for (int j = 1; j < g_cnt_node_query_graph; j++) {
-			MatchOrderUnit * unit = &g_matching_order_unit_of_query[j];
+		for (int j = 1; j < g_cnt_node_query_graph; j++)
+		{
+			MatchOrderUnit *unit = &g_matching_order_unit_of_query[j];
 			long long cur_index = unit->node;
-			if (cur_index < 0) {
+			if (cur_index < 0)
+			{
 				continue;
 			}
-			if (cur_index > r.result.size()) {
+			if (cur_index > r.result.size())
+			{
 				continue;
 			}
 			long long cur_data_id = r.result[cur_index];
 
 			// no satisfy node
-			if (cur_data_id == -1) {
+			if (cur_data_id == -1)
+			{
 				continue;
 			}
 
-			if (cur_data_id < 0) {
+			if (cur_data_id < 0)
+			{
 				continue;
 			}
 
@@ -850,72 +944,76 @@ inline void output_result() {
 			// find connect to parent by bridge
 			long long parent_data_id = r.result[parent_index];
 
-			if (parent_data_id == -1) {
+			if (parent_data_id == -1)
+			{
 				continue;
 			}
 
-			if (g_adj_list_two_hop_distance_data_graph[parent_data_id].query(cur_data_id)) {
+			if (g_adj_list_two_hop_distance_data_graph[parent_data_id].query(cur_data_id))
+			{
 				// dis = 2;
 				long long intermediate = bridge(parent_data_id, cur_data_id);
 				intermediate_node.push_back(intermediate);
 			}
-			else if (g_adj_list_one_hop_distance_data_graph[parent_data_id].query(cur_data_id)) {
+			else if (g_adj_list_one_hop_distance_data_graph[parent_data_id].query(cur_data_id))
+			{
 				int good = 0;
 			}
-			else {
+			else
+			{
 				vector<long long> t = bridge3(parent_data_id, cur_data_id);
-				if (t.size() != 0) {
+				if (t.size() != 0)
+				{
 					intermediate_node.insert(intermediate_node.end(), t.begin(), t.end());
 				}
 			}
 
-			if (unit->nte_length) {
-				for (long long j = unit->start_pos; j < unit->start_pos + unit->nte_length; j++) {
+			if (unit->nte_length)
+			{
+				for (long long j = unit->start_pos; j < unit->start_pos + unit->nte_length; j++)
+				{
 					// find connection to neighbor by bridge
 					long long nei_index = nte_array_for_matching_unit[j];
 					long long nei_data_id = r.result[g_matching_order_unit_of_query[nei_index].node];
 					// neighbor missing?
-					if (nei_data_id == -1) {
+					if (nei_data_id == -1)
+					{
 						continue;
 					}
 
-					if (g_adj_list_two_hop_distance_data_graph[parent_data_id].query(cur_data_id)) {
+					if (g_adj_list_two_hop_distance_data_graph[parent_data_id].query(cur_data_id))
+					{
 						// dis = 2;
 						long long intermediate = bridge(parent_data_id, cur_data_id);
 						intermediate_node.push_back(intermediate);
 					}
-					else if (g_adj_list_one_hop_distance_data_graph[parent_data_id].query(cur_data_id)) {
+					else if (g_adj_list_one_hop_distance_data_graph[parent_data_id].query(cur_data_id))
+					{
 						int good = 0;
 					}
-					else {
+					else
+					{
 						vector<long long> t = bridge3(parent_data_id, cur_data_id);
-						if (t.size() != 0) {
+						if (t.size() != 0)
+						{
 							intermediate_node.insert(intermediate_node.end(), t.begin(), t.end());
 						}
 					}
-
 				}
 			}
-
 		}
 
-		for (long long j = 0; j < r.result.size(); ++j) {
-			cout << j << ":" << r.result[j] << " ";
+		for (long long j = 0; j < r.result.size(); ++j)
+		{
+			cout << "R" << j << ":" << r.result[j] << " ";
 		}
-		for (long long j = 0; j < intermediate_node.size(); ++j) {
-			cout << j << ":" << intermediate_node[j] << " ";
+		for (long long j = 0; j < intermediate_node.size(); ++j)
+		{
+			cout << "I" << j << ":" << intermediate_node[j] << " ";
 		}
 
-		cout << "   cost: " << r.cost << endl;
-
+		cout << "   cost#: " << r.cost << endl;
 	}
-
 }
 
-
-
-
 #endif // !DYNAMIC_FAST_FIND_RESULT_H_
-
-
-

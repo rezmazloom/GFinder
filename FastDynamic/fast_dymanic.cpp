@@ -24,15 +24,14 @@
 
 using namespace std;
 
-
-CUtility * cu_total = new CUtility();
+CUtility *cu_total = new CUtility();
 CUtility *cu_readQuery = new CUtility();
 CUtility *cu_prepare = new CUtility();
 CUtility *cu_simulation = new CUtility();
 CUtility *cu_getSequence = new CUtility();
 CUtility *cu_querying = new CUtility();
 
-#define TOTAL_BEGIN  cu_total->startCT();
+#define TOTAL_BEGIN cu_total->startCT();
 #define TOTAL_END g_time_total = cu_total->endCT(false);
 
 #define READ_QUERY_BEGIN cu_readQuery->startCT();
@@ -44,14 +43,14 @@ CUtility *cu_querying = new CUtility();
 #define SIMULATION_BEGIN cu_simulation->startCT();
 #define SIMULATION_END g_time_simulation = cu_simulation->endCT(false);
 
-#define GET_SEQ_BEGIN  cu_getSequence->startCT();
+#define GET_SEQ_BEGIN cu_getSequence->startCT();
 #define GET_SEQ_END g_time_getSequence = cu_getSequence->endCT(false);
 
 #define SEARCH_BEGIN cu_querying->startCT();
 #define SEARCH_END g_time_search = cu_querying->endCT(false);
 
-
-void getLimit_full(string str_full_limit, long & LIMIT) {
+void getLimit_full(string str_full_limit, long &LIMIT)
+{
 	if (str_full_limit == "1K")
 		LIMIT = 1000;
 	else if (str_full_limit == "10K")
@@ -66,25 +65,30 @@ void getLimit_full(string str_full_limit, long & LIMIT) {
 		LIMIT = atol(str_full_limit.c_str());
 }
 
-
-void printVectorInt(vector<int> &vet) {
-	for (vector<int>::iterator pos = vet.begin(); pos != vet.end(); pos++) {
+void printVectorInt(vector<int> &vet)
+{
+	for (vector<int>::iterator pos = vet.begin(); pos != vet.end(); pos++)
+	{
 		printf("%d ", *pos);
 	}
 	putchar('\n');
 }
 
-void myy(vector<int> &a) {
-	for (int i = 0; i < a.size(); i++) {
+void myy(vector<int> &a)
+{
+	for (int i = 0; i < a.size(); i++)
+	{
 		cout << i;
 	}
 }
 
-
-inline bool is_contain_empty_indexset() {
-	for (int step = 0; step < g_core_size; step++) {
-		CPINode* tmp_node = &indexSet[step];
-		if (tmp_node->size == 1 && tmp_node->candidates[0] == -1) {
+inline bool is_contain_empty_indexset()
+{
+	for (int step = 0; step < g_core_size; step++)
+	{
+		CPINode *tmp_node = &indexSet[step];
+		if (tmp_node->size == 1 && tmp_node->candidates[0] == -1)
+		{
 			return true;
 		}
 	}
@@ -96,15 +100,14 @@ int main(int argc, char *argv[])
 
 	// use for directed graph
 
-
-	argv[1] = "C:\\Users\\data.format";
+	/*argv[1] = "C:\\Users\\data.format";
 	argv[2] = "C:\\Users\\Template3_C.gdf.format";
 	argv[3] = "C:\\Users\\predicate_similarity.txt";
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	argv[4] = "-f";
 	argv[5] = "1";
-	argv[6] = "1";
+	argv[6] = "1";*/
 
 	// top 10
 	TOPK = 100;
@@ -123,15 +126,14 @@ int main(int argc, char *argv[])
 
 	ParsePredicateMatrix::parsePredicateFile(edge_sim_file);
 
+	TOPK = stoi(argv[4]);
+	NODE_MISS_COST = stoi(argv[5]);
+	BRIDGE_COST = stoi(argv[6]);
+	EDGE_MISSING_COST = stoi(argv[7]);
+	IS_ONE_HOP_DATA_GRAPH = stoi(argv[8]);
 
-	//TOPK = stoi(argv[3]);
-	//NODE_MISS_COST = stoi(argv[4]);
-	//BRIDGE_COST = stoi(argv[5]);
-	//EDGE_MISSING_COST = stoi(argv[6]);
-	//IS_ONE_HOP_DATA_GRAPH = stoi(argv[7]);
-
-
-	cout << endl << "*******************************************************************" << endl;
+	cout << endl
+		 << "*******************************************************************" << endl;
 	cout << "Data File :" << argv[1] << endl;
 	cout << "Query file:" << argv[2] << endl;
 	cout << "Edge Similarity file:" << argv[3] << endl;
@@ -161,19 +163,19 @@ int main(int argc, char *argv[])
 	cout << "OK!" << endl;
 	//=======FIRST step END =====================================================
 
-
 	cout << "ATTENTION: Finish data index cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
 
 	int count_query_file = atoi(argv[5]);
 	count_query_file = 1;
-	//string str_full_limit = argv[5];
+	// string str_full_limit = argv[5];
 
-	//getLimit_full(str_full_limit, LIMIT);
+	// getLimit_full(str_full_limit, LIMIT);
 
 	char c;
 	int query_id;
 
-	for (long long i = 0; i < count_query_file; i++) {
+	for (long long i = 0; i < count_query_file; i++)
+	{
 		// clean heap here
 		{
 			g_result_heap.clear();
@@ -190,71 +192,90 @@ int main(int argc, char *argv[])
 		coreDecompositionQuery();
 		cout << "Decompose Query OK!" << endl;
 		g_isTree = true;
-		for (long long i = 0; i < g_cnt_node_query_graph; i++) {
-			if (g_core_number_query_graph[i] >= 2) {
+		for (long long i = 0; i < g_cnt_node_query_graph; i++)
+		{
+			if (g_core_number_query_graph[i] >= 2)
+			{
 				g_isTree = false;
 				break;
 			}
 		}
 
 		g_isTree = false;
-		if (g_isTree) {
-			
+		if (g_isTree)
+		{
 		}
-		else {
+		else
+		{
 			// extract residual tree and NEC from query
-			//extractResidualStructures();
+			// extractResidualStructures();
 			g_root_node_id_of_query = selectRootFromQuery();
-			//g_root_node_id_of_query = 3;
+			// g_root_node_id_of_query = 3;
 			findRootCandidate();
 			int root_index_point = -1;
-			while (g_root_candidates_size == 0) {
+			while (g_root_candidates_size == 0)
+			{
 				root_index_point = root_index_point + 1;
-				if (root_index_point == query_root_sort_list.size()) {
+				if (root_index_point == query_root_sort_list.size())
+				{
 					cout << "All node in core has no candidate!" << endl;
 					return 0;
 				}
 				g_root_node_id_of_query = query_root_sort_list[root_index_point] % ONE_M;
 				findRootCandidate();
 			}
-			
+
 			PREPARE_END;
 
-			for (int region = 0; region < g_root_candidates_size; region++) {			
+			for (int region = 0; region < g_root_candidates_size; region++)
+			{
 
 				long long root_cand_id = g_root_candidates[region];
 
 				g_nte_array_for_matching_unit_index = 0;
 				g_matching_sequence_index = 0;
 				g_matching_order_size_of_core = 0;
-				
+
 				// BFS method
-				if (!DYNAMIC) {
+				if (!DYNAMIC)
+				{
 					buildBFSCoreQueryTree();
 					buildBFSTreeCPI(root_cand_id);
-					//backwardPrune();
+					// backwardPrune();
 					generateInexactMatchingOrder();
 				}
-				else {
+				else
+				{
 					buildDynamicTreeCPI(root_cand_id);
-					for (int ii = 0; ii < 20; ii++) {
-						//backwardPrune();
+					for (int ii = 0; ii < 20; ii++)
+					{
+						// backwardPrune();
 
-						//if (is_contain_empty_indexset()) {
+						// if (is_contain_empty_indexset()) {
 						//	break;
-						//}
+						// }
 					}
-					
+
 					// buildCoreQueryTree();
 					generateMatchingOrderByDynamic();
 				}
 
 				// print correct partial match
 				cout << "Exact Partial Match: ";
-				for (int step = 0; step < g_core_size; step++) {
-					CPINode* tmp_node = &indexSet[step];
-					if (tmp_node->size == 1) {
+				for (int step = 0; step < g_core_size; step++)
+				{
+					CPINode *tmp_node = &indexSet[step];
+					/*print_array(tmp_node->path);
+					cout << "|";
+					print_array(tmp_node->candidates);
+					cout << "|" << tmp_node->size << "|";*/
+					if (tmp_node->size == 1)
+					{
 						cout << step << ":" << tmp_node->candidates[0] << " ";
+					}
+					else
+					{
+						cout << " ";
 					}
 				}
 				cout << endl;
@@ -264,38 +285,44 @@ int main(int argc, char *argv[])
 				}*/
 
 				// Dynamic method
-				//forwardBuildQueue(root_cand_id);
-				
-				//buildDynamicTreeCPI(root_cand_id);
-				//forwardBuild(root_cand_id);
-				//buildCoreQueryTree();
-				// build core query tree
+				// forwardBuildQueue(root_cand_id);
 
-				//cout << "forward Done" << endl;
-				
-				//cout << "backward Done" << endl;
-				//buildSearchIterator();
-				//cout << "build search iterator Done" << endl;
-				//generateMatchingOrder();
-				//generateInexactMatchingOrder();
-				//generateMatchingOrderByCoreQueryTree();
-				//matchingOrderLayer();
-				//test1();
-				//cout << "generateMatchingOrder Done" << endl;				
-				//findAllMatching();
+				// buildDynamicTreeCPI(root_cand_id);
+				// forwardBuild(root_cand_id);
+				// buildCoreQueryTree();
+				//  build core query tree
+
+				// cout << "forward Done" << endl;
+
+				// cout << "backward Done" << endl;
+				// buildSearchIterator();
+				// cout << "build search iterator Done" << endl;
+				// generateMatchingOrder();
+				// generateInexactMatchingOrder();
+				// generateMatchingOrderByCoreQueryTree();
+				// matchingOrderLayer();
+				// test1();
+				// cout << "generateMatchingOrder Done" << endl;
+				// findAllMatching();
 				find_inexact_result();
-				
+				// cout << "all_mapping:";
+				//  print_array(all_mapping);
+				//  cout << endl;
 				int aaa = 0;
 			}
-
 		}
 		output_result();
-		cout << "ATEENTION: Cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
+		/*for (Result re : g_result_heap)
+		{
+			cout << " / ";
+			print_vector(re.result);
+			cout << endl;
+		}*/
+
+		cout << "ATTENTION: Cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
 	}
 
-
-	//fin_query.close();
-	system("pause");
-    return 0;
+	// fin_query.close();
+	int zz = getchar();
+	return 0;
 }
-

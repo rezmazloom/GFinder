@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "matching_order.h"
+#include <cfloat>
 
 long long temp_array_query_index = 0;
 long long g_matching_order_size_of_core = 0;
@@ -16,8 +17,8 @@ long long stack_array_query[MAX_QUERY_NODE];
 long long temp_array_query[MAX_QUERY_NODE];
 long sum_path[MAX_QUERY_NODE];
 
-double * path_acuu;
-double * path_temp;
+double *path_acuu;
+double *path_temp;
 
 pair<long long, double> leaf_path_info[MAX_QUERY_NODE];
 vector<long long> temp_vector;
