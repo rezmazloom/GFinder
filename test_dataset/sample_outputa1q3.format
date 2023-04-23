@@ -1,0 +1,112 @@
+*******************************************************************
+Data File :test_dataset/data1.format
+Query file:test_dataset/query3.format
+Edge Similarity file:test_dataset/predicate_similarity.txt
+Top-K: 1
+Missing Node Cost: 30
+Intermediate Cost: 10
+Missing Edge Cost: 10
+Is One Hop: 0
+*******************************************************************
+Reading data graph ...
+processing data graph ...
+OK!
+Building index...
+Begin parametersInitilisingBeforeQuery...
+Begin initializeStatisticParameters...
+OK!
+ATTENTION: Finish data index cost: 0.000204
+Decompose Query OK!
+Exact Partial Match:  1:9 2:10 3:7 4:9  
+||||||||||||| Partial Mapping length 3 :1 => 0:0 1:9 2:10 3:7 4:0 5:0 
+Exact Partial Match:  1:9 2:11 3:7 4:9  
+Exact Partial Match: 0:0  2:4 3:5  5:4 
+||||||||||||| Partial Mapping length 5 :1 => 0:0 1:1 2:4 3:5 4:8 5:0 
+Exact Partial Match: 0:0  2:6 3:7    
+R0:0 R1:3 R2:6 R3:7 R4:9 R5:10 R6:11 R7:0 I0:2 I1:3 I2:2    cost#: 40
+ATTENTION: Cost: 0.000342
+g_max_label_counter:5
+g_cnt_node_of_data_graph:12
+g_cnt_unique_label_data_graph:5
+g_largest_label_data_graph:5
+MAX_DEGREE_A_NODE_QUERY:3
+g_degree_of_sort_by_label_degree_data_graph:2 1 3 3 4 2 2 2 3 3 2 3 
+g_nodes_label_after_change_data_graph:1 2 3 2 4 5 4 5 
+g_label_freqency_data_graph:0 1 4 1 4 2 161 0 
+g_transfer_label_mapping:0 1 2 3 4 5 33 0 
+g_core_number_data_graph:2 3 2 3 3 2 3 3 
+g_node_degree_data_graph:2 3 2 3 3 2 3 3 
+g_nodes_neighbors_start_position_data_graph:0 2 5 7 10 13 15 18 
+g_node_id_sort_by_label_degree_data_graph:0 8 1 3 9 2 10 11 
+size_of_g_nodes_adj_list_with_edge_type_data_graph:30
+g_node_id_sort_by_label_degree_data_graph:0 8 1 3 9 2 10 11 
+LIMIT:0
+g_cnt_node_query_graph:8
+g_sum_degree_query_graph:18
+g_mapping_found:0
+g_max_sum_degree_query_graphs:18
+g_nodes_adj_list_start_index_query_graph:0 2 5 7 9 12 15 16 
+g_label_cur_node_query_graph:0
+g_degree_cur_node_query_graph:0
+g_nodes_label_query_graph:1 2 4 5 2 4 4 33 
+g_node_degree_query_graph:2 3 2 2 3 3 1 2 
+g_core_number_query_graph:2 2 2 2 2 2 1 2 
+g_visited_for_query_graph:        
+NEC_mapping_child_with_same_label_cnt:0 0 0 0 0 0 0 0 
+NEC_map:0 0 0 0 0 0 0 0 
+NEC_mapping_Actual_first:0 0 0 0 0 0 0 0 
+dfs_stack_query:0 0 0 0 0 0 0 0 
+g_residual_tree_match_seq_index:0
+g_residual_tree_leaf_node_index:0
+g_residual_tree_match_seq_query:0 0 0 0 0 0 0 0 
+g_tree_node_parent_query_graph:0 0 0 0 0 0 0 0 
+NEC_set_index:0
+g_root_node_id_of_query:2
+NLF_array_query:4 0 0 113 0 0 0 0 
+NLF_size:1
+NLF_check:0 0 0 0 0 0 0 0 
+g_root_candidates:10 11 4 6 0 0 65 0 
+g_root_candidates_size:4
+g_nte_array_for_matching_unit_index:1
+g_matching_sequence_index:0
+g_good_count_data_graph:0 0 0 0 0 0 0 0 
+g_good_count_need_clean_index_data_graph:0 0 0 0 0 0 33 0 
+g_good_count_need_clean_size:0
+g_check_value:0
+g_forward_build_sequence:2 1 4 0 3 5 6 
+g_forward_build_parent:1 2 -1 1 2 4 5 -1012762419733073423 
+g_forward_level:3 2 1 3 2 3 4 0 
+g_build_cpi_sequence:0 0 0 0 0 0 0 0 
+g_build_cpi_sequence_size:0
+g_already_has_one_parent_data_node:-1 -1 -1 -1 -1 -1 -1 -1 
+count_index_array_for_indexSet:0
+g_visited_int_for_query_graph:0 0 0 0 0 0 0 0 
+g_core_tree_node_child_array:1 4 0 3 5 6 0 0 0 0 0 0 0 0 0 0 0 0 
+g_core_tree_node_nte_array:4 3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+g_core_tree_node_child_array_index:6
+g_core_tree_node_nte_array_index:2
+g_actual_mapping:6 9 0 7 9 11 10 0 
+g_cand_pos_in_indexset:0 1 0 0 1 2 0 0 
+g_core_size:7
+leaf_necs:0 0 0 0 0 0 0 0 
+leaf_necs_idx:0
+all_mapping:0 3 6 7 9 11 10 0 
+NEC_leaf_mapping_pair_index:0
+g_isTree:0
+g_data_edge_matrix:        
+g_level_size:4
+v_cnt:        
+MAX_NB_degree_data:3 3 3 3 3 3 4 4 
+g_BFS_sequence_length:0
+found_mapping_enumeration:10
+BFS_parent_query:1 2 1 2 -1 4 5 0 
+BFS_level_query:0 0 0 0 0 0 0 0 
+g_sim_visited:        
+g_sim_visited_stack:0 0 0 0 0 0 0 0 
+g_sim_visited_length:0
+g_max_degree_data_graph:4
+DYNAMIC:1
+query_root_sort_list:20000000002 10000000004 10000000003 10000000001 6666600005 5000000000 7 
+g_already_visited_data_graph:        
+g_node_similarity_matrix:1 0 1 0 1 1 1 1 
+g_is_init_edge_matchinig_array:0

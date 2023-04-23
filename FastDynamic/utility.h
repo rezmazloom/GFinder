@@ -168,13 +168,16 @@ inline void print_array(T *arr)
 	{
 		std::cout << arr[i] << ' ';
 	}
+	std::cout << endl;
 }
 
-inline void print_vector(vector<long long> arr)
+template <typename T>
+inline void print_vector(T arr)
 {
 	for (auto i : arr)
 	{
 		std::cout << i << ' ';
 	}
+	std::cout << endl;
 }
 #endif
