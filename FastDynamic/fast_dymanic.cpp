@@ -49,6 +49,168 @@ CUtility *cu_querying = new CUtility();
 #define SEARCH_BEGIN cu_querying->startCT();
 #define SEARCH_END g_time_search = cu_querying->endCT(false);
 
+void print_globals()
+{
+	cout << "g_max_label_counter:" << g_max_label_counter << endl;
+	cout << "g_cnt_node_of_data_graph:" << g_cnt_node_of_data_graph << endl;
+	cout << "g_cnt_unique_label_data_graph:" << g_cnt_unique_label_data_graph << endl;
+	// cout << "g_cnt_unique_label_data_graph_actual:" << g_cnt_unique_label_data_graph_actual << endl;
+	cout << "g_largest_label_data_graph:" << g_largest_label_data_graph << endl;
+	cout << "MAX_DEGREE_A_NODE_QUERY:" << MAX_DEGREE_A_NODE_QUERY << endl;
+	cout << "g_degree_of_sort_by_label_degree_data_graph:";
+	print_vector(g_degree_of_sort_by_label_degree_data_graph);
+	cout << "g_nodes_label_after_change_data_graph:";
+	print_array(g_nodes_label_after_change_data_graph);
+	cout << "g_label_freqency_data_graph:";
+	print_array(g_label_freqency_data_graph);
+	cout << "g_transfer_label_mapping:";
+	print_array(g_transfer_label_mapping);
+	cout << "g_core_number_data_graph:";
+	print_array(g_core_number_data_graph);
+	cout << "g_node_degree_data_graph:";
+	print_array(g_node_degree_data_graph);
+	cout << "g_nodes_neighbors_start_position_data_graph:";
+	print_array(g_nodes_neighbors_start_position_data_graph);
+	cout << "g_node_id_sort_by_label_degree_data_graph:";
+	print_array(g_node_id_sort_by_label_degree_data_graph);
+	cout << "size_of_g_nodes_adj_list_with_edge_type_data_graph:" << size_of_g_nodes_adj_list_with_edge_type_data_graph << endl;
+	cout << "g_node_id_sort_by_label_degree_data_graph:";
+	print_array(g_node_id_sort_by_label_degree_data_graph);
+
+	// query graph variables
+	cout << "LIMIT:" << LIMIT << endl;
+	cout << "g_cnt_node_query_graph:" << g_cnt_node_query_graph << endl;
+	cout << "g_sum_degree_query_graph:" << g_sum_degree_query_graph << endl;
+	cout << "g_mapping_found:" << g_mapping_found << endl;
+	cout << "g_max_sum_degree_query_graphs:" << g_max_sum_degree_query_graphs << endl;
+	cout << "g_nodes_adj_list_start_index_query_graph:";
+	print_array(g_nodes_adj_list_start_index_query_graph);
+	cout << "g_label_cur_node_query_graph:" << g_label_cur_node_query_graph << endl;
+	cout << "g_degree_cur_node_query_graph:" << g_degree_cur_node_query_graph << endl;
+
+	cout << "g_nodes_label_query_graph:";
+	print_array(g_nodes_label_query_graph);
+	cout << "g_node_degree_query_graph:";
+	print_array(g_node_degree_query_graph);
+	cout << "g_core_number_query_graph:";
+	print_array(g_core_number_query_graph);
+	cout << "g_visited_for_query_graph:";
+	print_array(g_visited_for_query_graph);
+	cout << "NEC_mapping_child_with_same_label_cnt:";
+	print_array(NEC_mapping_child_with_same_label_cnt);
+	cout << "NEC_map:";
+	print_array(NEC_map);
+	cout << "NEC_mapping_Actual_first:";
+	print_array(NEC_mapping_Actual_first);
+	cout << "dfs_stack_query:";
+	print_array(dfs_stack_query);
+	cout << "g_residual_tree_match_seq_index:" << g_residual_tree_match_seq_index << endl;
+	cout << "g_residual_tree_leaf_node_index:" << g_residual_tree_leaf_node_index << endl;
+	cout << "g_residual_tree_match_seq_query:";
+	print_array(g_residual_tree_match_seq_query);
+	cout << "g_tree_node_parent_query_graph:";
+	print_array(g_tree_node_parent_query_graph);
+	cout << "NEC_set_index:" << NEC_set_index << endl;
+	cout << "g_root_node_id_of_query:" << g_root_node_id_of_query << endl;
+	cout << "NLF_array_query:";
+	print_array(NLF_array_query);
+	cout << "NLF_size:" << NLF_size << endl;
+	cout << "NLF_check:";
+	print_array(NLF_check);
+	cout << "g_root_candidates:";
+	print_array(g_root_candidates);
+	cout << "g_root_candidates_size:" << g_root_candidates_size << endl;
+	cout << "g_nte_array_for_matching_unit_index:" << g_nte_array_for_matching_unit_index << endl;
+	cout << "g_matching_sequence_index:" << g_matching_sequence_index << endl;
+
+	cout << "g_good_count_data_graph:";
+	print_array(g_good_count_data_graph);
+	cout << "g_good_count_need_clean_index_data_graph:";
+	print_array(g_good_count_need_clean_index_data_graph);
+	cout << "g_good_count_need_clean_size:" << g_good_count_need_clean_size << endl;
+	cout << "g_check_value:" << g_check_value << endl;
+	cout << "g_forward_build_sequence:";
+	print_vector(g_forward_build_sequence);
+	cout << "g_forward_build_parent:";
+	print_array(g_forward_build_parent);
+	cout << "g_forward_level:";
+	print_array(g_forward_level);
+	cout << "g_build_cpi_sequence:";
+	print_array(g_build_cpi_sequence);
+	cout << "g_build_cpi_sequence_size:" << g_build_cpi_sequence_size << endl;
+	cout << "g_already_has_one_parent_data_node:";
+	print_array(g_already_has_one_parent_data_node);
+
+	cout << "count_index_array_for_indexSet:" << count_index_array_for_indexSet << endl;
+	cout << "g_visited_int_for_query_graph:";
+	print_array(g_visited_int_for_query_graph);
+	cout << "g_core_tree_node_child_array:";
+	print_vector(g_core_tree_node_child_array);
+	cout << "g_core_tree_node_nte_array:";
+	print_vector(g_core_tree_node_nte_array);
+	cout << "g_core_tree_node_child_array_index:" << g_core_tree_node_child_array_index << endl;
+	cout << "g_core_tree_node_nte_array_index:" << g_core_tree_node_nte_array_index << endl;
+	cout << "g_actual_mapping:";
+	print_array(g_actual_mapping);
+	cout << "g_cand_pos_in_indexset:";
+	print_array(g_cand_pos_in_indexset);
+	cout << "g_core_size:" << g_core_size << endl;
+
+	cout << "leaf_necs:";
+	print_array(leaf_necs);
+	cout << "leaf_necs_idx:" << leaf_necs_idx << endl;
+	cout << "all_mapping:";
+	print_array(all_mapping);
+
+	cout << "NEC_leaf_mapping_pair_index:" << NEC_leaf_mapping_pair_index << endl;
+	cout << "g_isTree:" << g_isTree << endl;
+	cout << "g_data_edge_matrix:";
+	print_array(g_data_edge_matrix);
+	// cout << "g_level:";
+	// print_vector(&g_level);
+	cout << "g_level_size:" << g_level_size << endl;
+	cout << "v_cnt:";
+	print_array(v_cnt);
+
+	cout << "MAX_NB_degree_data:";
+	print_array(MAX_NB_degree_data);
+	cout << "g_BFS_sequence_length:" << g_BFS_sequence_length << endl;
+	cout << "found_mapping_enumeration:" << found_mapping_enumeration << endl;
+	/*cout << "g_one_hop_label_count_data_graph:";
+	print_array(g_one_hop_label_count_data_graph);
+	cout << "g_two_hop_label_count_data_graph:";
+	print_array(g_two_hop_label_count_data_graph);
+	cout << "g_one_hop_label_count_query_graph:";
+	print_array(g_one_hop_label_count_query_graph);
+	cout << "g_two_hop_label_count_query_graph:";
+	print_array(g_two_hop_label_count_query_graph);*/
+	cout << "BFS_parent_query:";
+	print_array(BFS_parent_query);
+	cout << "BFS_level_query:";
+	print_array(BFS_level_query);
+
+	cout << "g_sim_visited:";
+	print_array(g_sim_visited);
+	cout << "g_sim_visited_stack:";
+	print_array(g_sim_visited_stack);
+	cout << "g_sim_visited_length:" << g_sim_visited_length << endl;
+	cout << "g_max_degree_data_graph:" << g_max_degree_data_graph << endl;
+	cout << "DYNAMIC:" << DYNAMIC << endl;
+	cout << "query_root_sort_list:";
+	print_vector(query_root_sort_list);
+
+	cout << "g_already_visited_data_graph:";
+	print_array(g_already_visited_data_graph);
+
+	cout << "g_node_similarity_matrix:";
+	print_array(g_node_similarity_matrix);
+	// cout << "g_edge_matching_array:";
+	// print_array(g_edge_matching_array);
+	cout << "g_is_init_edge_matchinig_array:" << g_is_init_edge_matchinig_array << endl;
+	// cout << "core_query_tree";
+	// print_array(core_query_tree)
+}
+
 void getLimit_full(string str_full_limit, long &LIMIT)
 {
 	if (str_full_limit == "1K")
@@ -189,140 +351,149 @@ int main(int argc, char *argv[])
 
 		PREPARE_BEGIN;
 
-		coreDecompositionQuery();
-		cout << "Decompose Query OK!" << endl;
-		g_isTree = true;
-		for (long long i = 0; i < g_cnt_node_query_graph; i++)
+		string command = "";
+		do
 		{
-			if (g_core_number_query_graph[i] >= 2)
+			coreDecompositionQuery();
+			cout << "Decompose Query OK!" << endl;
+			g_isTree = true;
+			for (long long i = 0; i < g_cnt_node_query_graph; i++)
 			{
-				g_isTree = false;
-				break;
-			}
-		}
-
-		g_isTree = false;
-		if (g_isTree)
-		{
-		}
-		else
-		{
-			// extract residual tree and NEC from query
-			// extractResidualStructures();
-			g_root_node_id_of_query = selectRootFromQuery();
-			// g_root_node_id_of_query = 3;
-			findRootCandidate();
-			int root_index_point = -1;
-			while (g_root_candidates_size == 0)
-			{
-				root_index_point = root_index_point + 1;
-				if (root_index_point == query_root_sort_list.size())
+				if (g_core_number_query_graph[i] >= 2)
 				{
-					cout << "All node in core has no candidate!" << endl;
-					return 0;
+					g_isTree = false;
+					break;
 				}
-				g_root_node_id_of_query = query_root_sort_list[root_index_point] % ONE_M;
+			}
+
+			g_isTree = false;
+			if (g_isTree)
+			{
+			}
+			else
+			{
+				// extract residual tree and NEC from query
+				// extractResidualStructures();
+				g_root_node_id_of_query = selectRootFromQuery();
+				// g_root_node_id_of_query = 3;
 				findRootCandidate();
-			}
-
-			PREPARE_END;
-
-			for (int region = 0; region < g_root_candidates_size; region++)
-			{
-
-				long long root_cand_id = g_root_candidates[region];
-
-				g_nte_array_for_matching_unit_index = 0;
-				g_matching_sequence_index = 0;
-				g_matching_order_size_of_core = 0;
-
-				// BFS method
-				if (!DYNAMIC)
+				int root_index_point = -1;
+				while (g_root_candidates_size == 0)
 				{
-					buildBFSCoreQueryTree();
-					buildBFSTreeCPI(root_cand_id);
-					// backwardPrune();
-					generateInexactMatchingOrder();
-				}
-				else
-				{
-					buildDynamicTreeCPI(root_cand_id);
-					for (int ii = 0; ii < 20; ii++)
+					root_index_point = root_index_point + 1;
+					if (root_index_point == query_root_sort_list.size())
 					{
-						// backwardPrune();
-
-						// if (is_contain_empty_indexset()) {
-						//	break;
-						// }
+						cout << "All node in core has no candidate!" << endl;
+						return 0;
 					}
-
-					// buildCoreQueryTree();
-					generateMatchingOrderByDynamic();
+					g_root_node_id_of_query = query_root_sort_list[root_index_point] % ONE_M;
+					findRootCandidate();
 				}
 
-				// print correct partial match
-				cout << "Exact Partial Match: ";
-				for (int step = 0; step < g_core_size; step++)
+				PREPARE_END;
+
+				for (int region = 0; region < g_root_candidates_size; region++)
 				{
-					CPINode *tmp_node = &indexSet[step];
-					/*print_array(tmp_node->path);
-					cout << "|";
-					print_array(tmp_node->candidates);
-					cout << "|" << tmp_node->size << "|";*/
-					if (tmp_node->size == 1)
+
+					long long root_cand_id = g_root_candidates[region];
+
+					g_nte_array_for_matching_unit_index = 0;
+					g_matching_sequence_index = 0;
+					g_matching_order_size_of_core = 0;
+
+					// BFS method
+					if (!DYNAMIC)
 					{
-						cout << step << ":" << tmp_node->candidates[0] << " ";
+						buildBFSCoreQueryTree();
+						buildBFSTreeCPI(root_cand_id);
+						// backwardPrune();
+						generateInexactMatchingOrder();
 					}
 					else
 					{
-						cout << " ";
+						buildDynamicTreeCPI(root_cand_id);
+						for (int ii = 0; ii < 20; ii++)
+						{
+							// backwardPrune();
+
+							// if (is_contain_empty_indexset()) {
+							//	break;
+							// }
+						}
+
+						// buildCoreQueryTree();
+						generateMatchingOrderByDynamic();
 					}
+
+					// print correct partial match
+					cout << "Exact Partial Match: ";
+					for (int step = 0; step < g_core_size; step++)
+					{
+						CPINode *tmp_node = &indexSet[step];
+						/*print_array(tmp_node->path);
+						cout << "|";
+						print_array(tmp_node->candidates);
+						cout << "|" << tmp_node->size << "|";*/
+						if (tmp_node->size == 1)
+						{
+							cout << step << ":" << tmp_node->candidates[0] << " ";
+						}
+						else
+						{
+							cout << " ";
+						}
+					}
+					cout << endl;
+
+					/*if (g_core_size != g_cnt_node_query_graph) {
+						continue;
+					}*/
+
+					// Dynamic method
+					// forwardBuildQueue(root_cand_id);
+
+					// buildDynamicTreeCPI(root_cand_id);
+					// forwardBuild(root_cand_id);
+					// buildCoreQueryTree();
+					//  build core query tree
+
+					// cout << "forward Done" << endl;
+
+					// cout << "backward Done" << endl;
+					// buildSearchIterator();
+					// cout << "build search iterator Done" << endl;
+					// generateMatchingOrder();
+					// generateInexactMatchingOrder();
+					// generateMatchingOrderByCoreQueryTree();
+					// matchingOrderLayer();
+					// test1();
+					// cout << "generateMatchingOrder Done" << endl;
+					// findAllMatching();
+					find_inexact_result();
+					// cout << "all_mapping:";
+					//  print_array(all_mapping);
+					//  cout << endl;
+					int aaa = 0;
 				}
-				cout << endl;
-
-				/*if (g_core_size != g_cnt_node_query_graph) {
-					continue;
-				}*/
-
-				// Dynamic method
-				// forwardBuildQueue(root_cand_id);
-
-				// buildDynamicTreeCPI(root_cand_id);
-				// forwardBuild(root_cand_id);
-				// buildCoreQueryTree();
-				//  build core query tree
-
-				// cout << "forward Done" << endl;
-
-				// cout << "backward Done" << endl;
-				// buildSearchIterator();
-				// cout << "build search iterator Done" << endl;
-				// generateMatchingOrder();
-				// generateInexactMatchingOrder();
-				// generateMatchingOrderByCoreQueryTree();
-				// matchingOrderLayer();
-				// test1();
-				// cout << "generateMatchingOrder Done" << endl;
-				// findAllMatching();
-				find_inexact_result();
-				// cout << "all_mapping:";
-				//  print_array(all_mapping);
-				//  cout << endl;
-				int aaa = 0;
 			}
-		}
-		output_result();
-		/*for (Result re : g_result_heap)
-		{
-			cout << " / ";
-			print_vector(re.result);
-			cout << endl;
-		}*/
+			output_result();
+			/*for (Result re : g_result_heap)
+			{
+				cout << " / ";
+				print_vector(re.result);
+				cout << endl;
+			}*/
 
-		cout << "ATTENTION: Cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
+			cout << "ATTENTION: Cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
+
+			// fin_query.close();
+			// print_globals();
+			string arg1 = "";
+			string arg2 = "";
+			cin >> command >> arg1 >> arg2;
+			pcocess_query_modification(command, arg1, arg2);
+		} while (command.compare("done") != 1);
 	}
 
-	// fin_query.close();
-	int zz = getchar();
 	return 0;
 }

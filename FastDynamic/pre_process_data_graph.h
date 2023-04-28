@@ -1,4 +1,4 @@
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 #pragma once
 
 #ifndef FAST_DYNAMIC_PRE_PROCESS_DATA_GRAPH_H_
@@ -23,57 +23,57 @@ using namespace std;
 #define BUFF_SIZE 10240
 
 // calculate there are how many distinct label and the max label is what
-inline void preprocessDataGraph(string data_graph_file) {
-	ifstream fin(data_graph_file);
-	string line;
-	getline(fin, line);
+inline void preprocessDataGraph(string data_graph_file)
+{
+	std::ifstream data_file(data_graph_file);
+	std::string line;
+	std::getline(data_file, line);
 	vector<string> v;
 	split(line, v, ' ');
 	g_cnt_node_of_data_graph = atoi(v[2].c_str());
 
 	g_nodes_label_after_change_data_graph = new int[g_cnt_node_of_data_graph];
 
-	FILE *fp;
 	char str[BUFF_SIZE];
 
-	fp = fopen(data_graph_file.c_str(), "r");
 	long long largest_label = -1;
 	unordered_set<long long> unique_label_set;
 	long long count_edge_number = 0;
 
-	while (fgets(str, BUFF_SIZE, fp) != NULL) {
-		line = string(str);
-		if (line.at(0) == 'v') {
+	while (std::getline(data_file, line))
+	{
+		// line = string(str);
+		if (line.at(0) == 'v')
+		{
 			split(line, v, ' ');
 			int label = atoi(v[2].c_str());
-			if (label > largest_label) {
+			if (label > largest_label)
+			{
 				largest_label = label;
 			}
 			unique_label_set.insert(label);
 		}
-		if (line.at(0) == 'e') {
+		if (line.at(0) == 'e')
+		{
 			count_edge_number++;
 		}
 	}
 
-	fclose(fp);
+	data_file.close();
 
 	g_largest_label_data_graph = largest_label;
 	g_cnt_unique_label_data_graph = unique_label_set.size();
 	g_label_freqency_data_graph = new int[g_cnt_unique_label_data_graph + 1];
 	memset(g_label_freqency_data_graph, 0, sizeof(int) * (g_cnt_unique_label_data_graph + 1));
 
-
 	SIZEOK = (g_cnt_node_of_data_graph <= SIZE_OF_EDGE_MATRIX) ? 1 : 0;
 	SIZE_OF_EDGE_MATRIX = (g_cnt_node_of_data_graph <= SIZE_OF_EDGE_MATRIX) ? g_cnt_node_of_data_graph : SIZE_OF_EDGE_MATRIX;
 	g_data_edge_matrix = new char[SIZE_OF_EDGE_MATRIX * SIZE_OF_EDGE_MATRIX];
 	memset(g_data_edge_matrix, 0, sizeof(char) * SIZE_OF_EDGE_MATRIX * SIZE_OF_EDGE_MATRIX);
-
 }
 
-
-
-inline void buildAdjListAndLabelPositionMatrix(vector<vector<EdgeType>> & adj_list, long long sum_degree) {
+inline void buildAdjListAndLabelPositionMatrix(vector<vector<EdgeType>> &adj_list, long long sum_degree)
+{
 	g_nodes_neighbors_list_of_edge_type_data_graph = new EdgeType[sum_degree];
 	size_of_g_nodes_adj_list_with_edge_type_data_graph = sum_degree;
 
@@ -82,12 +82,13 @@ inline void buildAdjListAndLabelPositionMatrix(vector<vector<EdgeType>> & adj_li
 
 	g_nodes_neighbors_start_position_data_graph = new int[g_cnt_node_of_data_graph + 1];
 
-
 	g_position_of_neighbors_have_label_data_graph = new unordered_map<int, pair<int, int>>[g_cnt_node_of_data_graph];
 
-	for (int i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (int i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		// put node's sorted adjacent list into the array
-		if (adj_list[i].size() == 0) {
+		if (adj_list[i].size() == 0)
+		{
 			// this shouldn't happen
 			g_nodes_neighbors_start_position_data_graph[i] = cur_adj_start_index;
 			continue;
@@ -105,19 +106,23 @@ inline void buildAdjListAndLabelPositionMatrix(vector<vector<EdgeType>> & adj_li
 		long long cur_count = 1;
 
 		// index i is the node id
-		if (adj_list[i].size() == 1) {
+		if (adj_list[i].size() == 1)
+		{
 			g_position_of_neighbors_have_label_data_graph[i][begin_label] =
 				make_pair(cur_node_id_label_matrix_index, cur_count);
 			cur_node_id_label_matrix_index += cur_count;
 			continue;
 		}
 
-		for (long long j = 1; j < adj_list[i].size(); j++) {
+		for (long long j = 1; j < adj_list[i].size(); j++)
+		{
 			int this_label = g_nodes_label_after_change_data_graph[adj_list[i][j].node_id];
-			if (this_label == begin_label) {
+			if (this_label == begin_label)
+			{
 				cur_count++;
 			}
-			else {
+			else
+			{
 				g_position_of_neighbors_have_label_data_graph[i][begin_label] =
 					make_pair(cur_node_id_label_matrix_index, cur_count);
 				cur_node_id_label_matrix_index += cur_count;
@@ -129,41 +134,47 @@ inline void buildAdjListAndLabelPositionMatrix(vector<vector<EdgeType>> & adj_li
 		g_position_of_neighbors_have_label_data_graph[i][begin_label] =
 			make_pair(cur_node_id_label_matrix_index, cur_count);
 		cur_node_id_label_matrix_index += cur_count;
-
 	}
 
 	g_nodes_neighbors_start_position_data_graph[g_cnt_node_of_data_graph] = sum_degree;
 }
 
-inline void buildLabel2NodeID_only_used_in_seedfinder() {
+inline void buildLabel2NodeID_only_used_in_seedfinder()
+{
 	long long last_label = 0;
 	long long last_degree = 0;
 	g_node_id_sort_by_label_degree_data_graph = new int[g_cnt_node_of_data_graph];
 
-	for (int i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (int i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		g_node_id_sort_by_label_degree_data_graph[i] = i;
 	}
 
 	sort(g_node_id_sort_by_label_degree_data_graph, g_node_id_sort_by_label_degree_data_graph + g_cnt_node_of_data_graph, sortByLabelAndDegree);
 	g_degree_of_sort_by_label_degree_data_graph.resize(g_cnt_node_of_data_graph);
 
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		g_degree_of_sort_by_label_degree_data_graph[i] = g_node_degree_data_graph[g_node_id_sort_by_label_degree_data_graph[i]];
 	}
 
 	g_label_to_sort_by_degree_node_data_graph = new pair<int, int>[g_cnt_unique_label_data_graph + 1];
 
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		long long v = g_node_id_sort_by_label_degree_data_graph[i];
 		long long label = g_nodes_label_after_change_data_graph[v];
 		long long degree = g_node_degree_data_graph[v];
-		if (i == 0) {
+		if (i == 0)
+		{
 			g_label_to_sort_by_degree_node_data_graph[0] = make_pair(0, 0);
 			last_label = label;
 			last_degree = degree;
 		}
-		else {
-			if (label != last_label) {
+		else
+		{
+			if (label != last_label)
+			{
 				g_label_to_sort_by_degree_node_data_graph[last_label] = make_pair(last_degree, i);
 			}
 			last_label = label;
@@ -174,26 +185,24 @@ inline void buildLabel2NodeID_only_used_in_seedfinder() {
 	g_label_to_sort_by_degree_node_data_graph[last_label] = make_pair(last_degree, g_cnt_node_of_data_graph);
 }
 
-
-inline void buildNLFCheck() {
+inline void buildNLFCheck()
+{
 	NLF_size = (g_cnt_unique_label_data_graph + 1) / SIZEOF_INT + 1;
 	NLF_array_query = new long long[NLF_size]; // the array for query graph
 	NLF_check = new long long[g_cnt_node_of_data_graph * NLF_size];
 	memset(NLF_check, 0, sizeof(long long) * NLF_size * g_cnt_node_of_data_graph);
 }
 
-inline void initNEC() {
-	NEC_mapping_child_with_same_label_cnt = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; //label and the parent node id
+inline void initNEC()
+{
+	NEC_mapping_child_with_same_label_cnt = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // label and the parent node id
 	memset(NEC_mapping_child_with_same_label_cnt, 0, sizeof(int) * (g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE);
 
-	NEC_mapping_pair = new NEC_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // <label, parent node id>
+	NEC_mapping_pair = new NEC_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE];		 // <label, parent node id>
 	NEC_set_array = new NEC_set_array_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // <parent_id, sum>
 }
 
-
-
-
-//inline void addTwoToThreeNearestNeighborAndDis() {
+// inline void addTwoToThreeNearestNeighborAndDis() {
 //
 //	// clean
 //	memset(g_good_count_data_graph, 0, sizeof(int) * g_cnt_node_of_data_graph);
@@ -248,32 +257,36 @@ inline void initNEC() {
 //		memset(g_good_count_data_graph, 0, sizeof(int) * g_cnt_node_of_data_graph);
 //	}
 //
-//}
+// }
 
-
-inline void addOneAndTwoHopNeighbor() {
+inline void addOneAndTwoHopNeighbor()
+{
 
 	// clean
 	memset(g_good_count_data_graph, 0, sizeof(int) * g_cnt_node_of_data_graph);
 	vector<long long> visited;
 
-	void* raw_memory = operator new[](g_cnt_node_of_data_graph * sizeof(HashTable));
-	g_adj_list_one_hop_distance_data_graph = static_cast<HashTable*>(raw_memory);
-	for (int i = 0; i < g_cnt_node_of_data_graph; ++i) {
-		new(&g_adj_list_one_hop_distance_data_graph[i])HashTable(8);
+	void *raw_memory = operator new[](g_cnt_node_of_data_graph * sizeof(HashTable));
+	g_adj_list_one_hop_distance_data_graph = static_cast<HashTable *>(raw_memory);
+	for (int i = 0; i < g_cnt_node_of_data_graph; ++i)
+	{
+		new (&g_adj_list_one_hop_distance_data_graph[i]) HashTable(8);
 	}
 
-	void* raw_memory2 = operator new[](g_cnt_node_of_data_graph * sizeof(HashTable));
-	g_adj_list_two_hop_distance_data_graph = static_cast<HashTable*>(raw_memory2);
-	for (int i = 0; i < g_cnt_node_of_data_graph; ++i) {
-		new(&g_adj_list_two_hop_distance_data_graph[i])HashTable(64);
+	void *raw_memory2 = operator new[](g_cnt_node_of_data_graph * sizeof(HashTable));
+	g_adj_list_two_hop_distance_data_graph = static_cast<HashTable *>(raw_memory2);
+	for (int i = 0; i < g_cnt_node_of_data_graph; ++i)
+	{
+		new (&g_adj_list_two_hop_distance_data_graph[i]) HashTable(64);
 	}
 
-	for (int node_id = 0; node_id < g_cnt_node_of_data_graph; node_id++) {
+	for (int node_id = 0; node_id < g_cnt_node_of_data_graph; node_id++)
+	{
 
 		g_good_count_data_graph[node_id] = 1;
 		// iterate neighbor
-		for (long long one = g_nodes_neighbors_start_position_data_graph[node_id]; one < g_nodes_neighbors_start_position_data_graph[node_id + 1]; one++) {
+		for (long long one = g_nodes_neighbors_start_position_data_graph[node_id]; one < g_nodes_neighbors_start_position_data_graph[node_id + 1]; one++)
+		{
 			long long neighborId = g_nodes_neighbors_list_of_edge_type_data_graph[one].node_id;
 
 			// one
@@ -282,38 +295,39 @@ inline void addOneAndTwoHopNeighbor() {
 			g_good_count_data_graph[neighborId] = 1;
 		}
 
-		for (long long one = g_nodes_neighbors_start_position_data_graph[node_id]; one < g_nodes_neighbors_start_position_data_graph[node_id + 1]; one++) {
+		for (long long one = g_nodes_neighbors_start_position_data_graph[node_id]; one < g_nodes_neighbors_start_position_data_graph[node_id + 1]; one++)
+		{
 			long long neighborId = g_nodes_neighbors_list_of_edge_type_data_graph[one].node_id;
 
-			for (long long two = g_nodes_neighbors_start_position_data_graph[neighborId]; two < g_nodes_neighbors_start_position_data_graph[neighborId + 1]; two++) {
+			for (long long two = g_nodes_neighbors_start_position_data_graph[neighborId]; two < g_nodes_neighbors_start_position_data_graph[neighborId + 1]; two++)
+			{
 				long long twoNeighbor = g_nodes_neighbors_list_of_edge_type_data_graph[two].node_id;
 				// no visited before, two
-				if (g_good_count_data_graph[twoNeighbor] == 0) {
+				if (g_good_count_data_graph[twoNeighbor] == 0)
+				{
 					g_adj_list_two_hop_distance_data_graph[node_id].AddValue(twoNeighbor);
-					
+
 					g_good_count_data_graph[twoNeighbor] = 1;
 				}
-				
 			}
-		
 		}
 
 		memset(g_good_count_data_graph, 0, sizeof(int) * g_cnt_node_of_data_graph);
 	}
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-inline void readAndProcessDataGraph(string data_graph_file) {
-	vector<vector <EdgeType>> local_adj_list;
+inline void readAndProcessDataGraph(string data_graph_file)
+{
+	vector<vector<EdgeType>> local_adj_list;
 	local_adj_list.resize(g_cnt_node_of_data_graph);
 	g_transfer_label_mapping = new int[g_largest_label_data_graph + 1];
 	memset(g_transfer_label_mapping, 0, sizeof(int) * (g_largest_label_data_graph + 1));
 
 	g_good_count_data_graph = new int[g_cnt_node_of_data_graph];
 	memset(g_good_count_data_graph, 0, sizeof(int) * g_cnt_node_of_data_graph);
-	
+
 	int label_index = 1; // start label from 1, because 0 means not found the label
 	int node_index = 0;
 
@@ -325,15 +339,18 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 
 	fp = fopen(data_graph_file.c_str(), "r");
 
-	while (fgets(str, BUFF_SIZE, fp) != NULL) {
+	while (fgets(str, BUFF_SIZE, fp) != NULL)
+	{
 		line = string(str);
-		if (line.at(0) == 'v') {
+		if (line.at(0) == 'v')
+		{
 			split(line, v, ' ');
 			int label_from_file = atoi(v[2].c_str());
 
 			int actual_label = g_transfer_label_mapping[label_from_file];
-			
-			if (actual_label == 0) {
+
+			if (actual_label == 0)
+			{
 				actual_label = label_index;
 				g_transfer_label_mapping[label_from_file] = label_index;
 				label_index++;
@@ -343,17 +360,19 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 			g_label_freqency_data_graph[actual_label]++;
 		}
 
-		if (line.at(0) == 'e') {
+		if (line.at(0) == 'e')
+		{
 			split(line, v, ' ');
 			int left_node = atoi(v[1].c_str());
 			int right_node = atoi(v[2].c_str());
 
-			//set<long long> edge_type_set = parse_edge_type_string(v[3]);
-			//long long edge_type_set = atoll(v[3].c_str());
+			// set<long long> edge_type_set = parse_edge_type_string(v[3]);
+			// long long edge_type_set = atoll(v[3].c_str());
 #ifdef NO_EDGE_TYPE
 			edge_type_set = 1;
 #endif
-			if (left_node != right_node) {
+			if (left_node != right_node)
+			{
 				EdgeType edgeA(right_node, v[3], true);
 				EdgeType edgeB(left_node, v[3], false);
 				local_adj_list[left_node].push_back(edgeA);
@@ -364,9 +383,7 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 				g_data_edge_matrix[left * SIZE_OF_EDGE_MATRIX + right] = 1;
 				g_data_edge_matrix[right * SIZE_OF_EDGE_MATRIX + left] = 1;
 			}
-
 		}
-
 	}
 	fclose(fp);
 
@@ -375,19 +392,21 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 	g_node_degree_data_graph = new int[g_cnt_node_of_data_graph];
 	g_max_degree_data_graph = 0;
 	long long sum_degree = 0;
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		int degree = local_adj_list[i].size();
 		g_node_degree_data_graph[i] = degree;
 		g_core_number_data_graph[i] = degree;
 		sum_degree += degree;
-		if (degree > g_max_degree_data_graph) {
+		if (degree > g_max_degree_data_graph)
+		{
 			g_max_degree_data_graph = degree;
 		}
 	}
 
 	// build adj list
-	//g_adj_list_data_graph.resize(g_cnt_node_of_data_graph);
-	//for (int i = 0; i < local_adj_list.size(); i++) {
+	// g_adj_list_data_graph.resize(g_cnt_node_of_data_graph);
+	// for (int i = 0; i < local_adj_list.size(); i++) {
 	//	g_adj_list_data_graph[i].insert(local_adj_list[i].begin(), local_adj_list[i].end());
 	//}
 
@@ -398,13 +417,14 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 
 	buildNLFCheck(); // don't use NLF in this algorithm
 
-
 	// Use for speeding up at enumeration
 	//======  hash table initialization ====================
-	
-	if (SIZEOK == 0) { //only create the hash tables if the cnt is larger than the size of edge matrix
+
+	if (SIZEOK == 0)
+	{ // only create the hash tables if the cnt is larger than the size of edge matrix
 		g_hash_table = new HashTable *[g_cnt_node_of_data_graph];
-		for (long long i = 0; i < local_adj_list.size(); i++) {
+		for (long long i = 0; i < local_adj_list.size(); i++)
+		{
 
 			if (g_cnt_node_of_data_graph <= HT_LENGTH)
 				g_hash_table[i] = new HashTable();
@@ -415,7 +435,7 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 				g_hash_table[i]->AddValue(local_adj_list[i][j].node_id);
 		}
 	}
-	
+
 	//========================================================
 
 #ifdef NLF_CHECK
@@ -425,22 +445,25 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 	NLF_check = new long long[g_cnt_node_of_data_graph * NLF_size];
 	memset(NLF_check, 0, sizeof(long long) * NLF_size * g_cnt_node_of_data_graph);
 	for (long long i = 0; i < local_adj_list.size(); i++)
-		// iterate node i's neighboor	
-		for (long long j = 0; j < local_adj_list[i].size(); j++) {
+		// iterate node i's neighboor
+		for (long long j = 0; j < local_adj_list[i].size(); j++)
+		{
 			long long label = g_nodes_label_after_change_data_graph[local_adj_list[i][j].node_id];
 			long long idx = NLF_size - 1 - label / SIZEOF_INT;
 			long long pos = label % SIZEOF_INT;
-			NLF_check[i  * NLF_size + idx] |= (1 << pos);
+			NLF_check[i * NLF_size + idx] |= (1 << pos);
 		}
-	//=====================================================================================
+		//=====================================================================================
 #endif
 
 	// use for CORE_AND_MAX_NB_FILTER
 	//============== initialize the MAX neighbor degree of data node =====================
 	MAX_NB_degree_data = new int[g_cnt_node_of_data_graph];
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		long long max_degree = 0;
-		for (long long j = 0; j < local_adj_list[i].size(); j++) {
+		for (long long j = 0; j < local_adj_list[i].size(); j++)
+		{
 			int node = local_adj_list[i][j].node_id;
 			if (g_node_degree_data_graph[node] > max_degree)
 				max_degree = g_node_degree_data_graph[node];
@@ -449,11 +472,11 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 	}
 	//=====================================================================================
 
+	// buildOneHopLabelCount();
+	// buildTwoHopLabelCount();
 
-	//buildOneHopLabelCount();
-	//buildTwoHopLabelCount();
-
-	if (IS_ONE_HOP_DATA_GRAPH == 0) {
+	if (IS_ONE_HOP_DATA_GRAPH == 0)
+	{
 		addOneAndTwoHopNeighbor();
 	}
 
@@ -466,24 +489,24 @@ inline void readAndProcessDataGraph(string data_graph_file) {
 	memset(g_already_visited_data_graph, 0, sizeof(char) * g_cnt_node_of_data_graph);
 }
 
-
-
 // this function is useless
-inline void coreDecomposition_data() {
-	//core-decomposition for the data graph
-	//begin starting the core-decomposition, core number is the degree number
+inline void coreDecomposition_data()
+{
+	// core-decomposition for the data graph
+	// begin starting the core-decomposition, core number is the degree number
 
 	long long *bin = new long long[g_max_degree_data_graph + 1];
 	memset(bin, 0, sizeof(long long) * (g_max_degree_data_graph + 1));
 
 	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
-		bin[g_core_number_data_graph[i]] ++;
+		bin[g_core_number_data_graph[i]]++;
 
 	long long start = 0;
 
 	long long num;
 
-	for (long long d = 0; d <= g_max_degree_data_graph; d++) {
+	for (long long d = 0; d <= g_max_degree_data_graph; d++)
+	{
 		num = bin[d];
 		bin[d] = start;
 		start += num;
@@ -492,25 +515,29 @@ inline void coreDecomposition_data() {
 	long long *pos = new long long[g_cnt_node_of_data_graph];
 	long long *vert = new long long[g_cnt_node_of_data_graph];
 
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 		pos[i] = bin[g_core_number_data_graph[i]];
 		vert[pos[i]] = i;
-		bin[g_core_number_data_graph[i]] ++;
+		bin[g_core_number_data_graph[i]]++;
 	}
 
 	for (long long d = g_max_degree_data_graph; d > 0; d--)
 		bin[d] = bin[d - 1];
 	bin[0] = 0;
 
-	for (long long i = 0; i < g_cnt_node_of_data_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_of_data_graph; i++)
+	{
 
 		long long v = vert[i];
 
-		for (long long j = g_nodes_neighbors_start_position_data_graph[v]; j < g_nodes_neighbors_start_position_data_graph[v + 1]; j++) {
+		for (long long j = g_nodes_neighbors_start_position_data_graph[v]; j < g_nodes_neighbors_start_position_data_graph[v + 1]; j++)
+		{
 
 			long long u = g_nodes_neighbors_list_of_edge_type_data_graph[j].node_id;
 
-			if (g_core_number_data_graph[u] > g_core_number_data_graph[v]) {
+			if (g_core_number_data_graph[u] > g_core_number_data_graph[v])
+			{
 
 				long long du = g_core_number_data_graph[u];
 				long long pu = pos[u];
@@ -518,27 +545,27 @@ inline void coreDecomposition_data() {
 				long long pw = bin[du];
 				long long w = vert[pw];
 
-				if (u != w) {	//if not the same node, switch the position of the two nodes.
+				if (u != w)
+				{ // if not the same node, switch the position of the two nodes.
 					pos[u] = pw;
 					pos[w] = pu;
 					vert[pu] = w;
 					vert[pw] = u;
 				}
 
-				bin[du] ++;
+				bin[du]++;
 				g_core_number_data_graph[u]--;
 			}
 		}
 	}
-
 
 	delete bin;
 	delete pos;
 	delete vert;
 }
 
-
-inline void initParametersBeforeQuery() {
+inline void initParametersBeforeQuery()
+{
 
 #ifdef RESULT_ENUMERATION
 	leaf_necs = new int[MAX_QUERY_NODE];
@@ -546,8 +573,10 @@ inline void initParametersBeforeQuery() {
 	all_mapping = new int[MAX_QUERY_NODE];
 #endif
 
-	for (int i = 0; i < g_cnt_unique_label_data_graph + 1; i++) {
-		if (g_label_freqency_data_graph[i] > g_max_label_counter) {
+	for (int i = 0; i < g_cnt_unique_label_data_graph + 1; i++)
+	{
+		if (g_label_freqency_data_graph[i] > g_max_label_counter)
+		{
 			g_max_label_counter = g_label_freqency_data_graph[i];
 		}
 	}
@@ -559,7 +588,8 @@ inline void initParametersBeforeQuery() {
 	memset(g_good_count_need_clean_index_data_graph, 0, sizeof(g_max_label_counter));
 	g_good_count_need_clean_size = 0;
 
-	for (long long i = 0; i < MAX_QUERY_NODE; i++) {
+	for (long long i = 0; i < MAX_QUERY_NODE; i++)
+	{
 		indexSet[i].candidates = new int[g_max_label_counter];
 		indexSet[i].path = new long[g_max_label_counter];
 		indexSet[i].parent_cand_size = 0;
@@ -570,9 +600,8 @@ inline void initParametersBeforeQuery() {
 	g_already_has_one_parent_data_node = new int[g_cnt_node_of_data_graph];
 	memset(g_already_has_one_parent_data_node, -1, sizeof(int) * g_cnt_node_of_data_graph);
 	g_index_array_for_indexSet = new CPICell[g_cnt_node_of_data_graph];
-	
 
-	NEC_mapping_Actual_first = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; //label and the parent node id
+	NEC_mapping_Actual_first = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // label and the parent node id
 	memset(NEC_mapping_Actual_first, 0, sizeof(int) * (g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE);
 
 	memset(NEC_mapping_child_with_same_label_cnt, 0, sizeof(int) * (g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE);
@@ -584,28 +613,31 @@ inline void initParametersBeforeQuery() {
 	memset(v_cnt, 0, sizeof(char) * g_cnt_node_of_data_graph);
 }
 
+inline void buildOneHopLabelCountQuery_used_by_sim()
+{
 
-inline void buildOneHopLabelCountQuery_used_by_sim() {
-
-	if (g_one_hop_label_count_query_graph != NULL) {
+	if (g_one_hop_label_count_query_graph != NULL)
+	{
 		delete[] g_one_hop_label_count_query_graph;
 	}
 
 	g_one_hop_label_count_query_graph = new int[g_cnt_node_query_graph * g_cnt_unique_label_data_graph];
 	memset(g_one_hop_label_count_query_graph, 0, sizeof(int) * g_cnt_node_query_graph * g_cnt_unique_label_data_graph);
 	// iterate all data node
-	for (int node_id = 0; node_id < g_cnt_node_query_graph; node_id++) {
+	for (int node_id = 0; node_id < g_cnt_node_query_graph; node_id++)
+	{
 		// count all label
 		int begin = g_nodes_adj_list_start_index_query_graph[node_id];
 		int end = g_nodes_adj_list_start_index_query_graph[node_id + 1];
 
-		for (int i = begin; i < end; i++) {	
+		for (int i = begin; i < end; i++)
+		{
 			int neighbor = g_nodes_adj_list_with_edge_type_query_graph[i].node_id;
 			int label = g_nodes_label_query_graph[neighbor];
+			// change this for RM_NODE and RM_EDGE
 			g_one_hop_label_count_query_graph[node_id * g_cnt_unique_label_data_graph + label - 1]++;
 		}
 	}
-
 }
 
 /*
@@ -662,8 +694,8 @@ inline void buildTwoHopLabelCountQuery() {
 
 */
 
-
-inline void buildSimilarityMatrix() {
+inline void buildSimilarityMatrix()
+{
 
 	g_node_similarity_matrix = new double[g_cnt_node_of_data_graph * g_cnt_node_query_graph];
 	memset(g_node_similarity_matrix, 0, sizeof(double) * g_cnt_node_of_data_graph * g_cnt_node_query_graph);
@@ -671,9 +703,12 @@ inline void buildSimilarityMatrix() {
 	int sum = 0;
 	int less_num = 0;
 
-	if (g_cnt_unique_label_data_graph == 1) {
-		for (int data_id = 0; data_id < g_cnt_node_of_data_graph; data_id++) {
-			for (int query_id = 0; query_id < g_cnt_node_query_graph; query_id++) {
+	if (g_cnt_unique_label_data_graph == 1)
+	{
+		for (int data_id = 0; data_id < g_cnt_node_of_data_graph; data_id++)
+		{
+			for (int query_id = 0; query_id < g_cnt_node_query_graph; query_id++)
+			{
 
 				less_num = 0;
 				int data_degree = g_node_degree_data_graph[data_id];
@@ -681,7 +716,8 @@ inline void buildSimilarityMatrix() {
 
 				int diff = data_degree - query_degree;
 
-				if (diff < 0) {
+				if (diff < 0)
+				{
 					less_num = -diff;
 				}
 
@@ -689,43 +725,46 @@ inline void buildSimilarityMatrix() {
 			}
 		}
 	}
-	else {
+	else
+	{
 
 		// if have multi label in graph, not use in out
-		for (int data_id = 0; data_id < g_cnt_node_of_data_graph; data_id++) {
-			for (int query_id = 0; query_id < g_cnt_node_query_graph; query_id++) {
+		for (int data_id = 0; data_id < g_cnt_node_of_data_graph; data_id++)
+		{
+			for (int query_id = 0; query_id < g_cnt_node_query_graph; query_id++)
+			{
 
 				sum = 0;
 				less_num = 0;
 				int query_begin = query_id * g_cnt_unique_label_data_graph;
 				// iterate each label
-				for (int i = 0; i < g_cnt_unique_label_data_graph; i++) {
+				for (int i = 0; i < g_cnt_unique_label_data_graph; i++)
+				{
+					// 0,1,0,0,0,1,0,0,0,0. # of partitions based on query node size with width of max unique labels in data graph
 					sum += g_one_hop_label_count_query_graph[query_begin + i];
 					int data_neighbor = g_position_of_neighbors_have_label_data_graph[data_id][i + 1].second;
 
 					int diff = data_neighbor - g_one_hop_label_count_query_graph[query_begin + i];
-					if (diff < 0) {
+					if (diff < 0)
+					{
 						less_num = less_num - diff;
 					}
 				}
 
 				g_node_similarity_matrix[query_id * g_cnt_node_of_data_graph + data_id] = 1 - ((less_num * 1.0) / sum);
-
 			}
 		}
-
 	}
 
 	return;
 }
 
-
-
-inline void single_readQueryGraph(string query_graph_file) {
+inline void single_readQueryGraph(string query_graph_file)
+{
 
 	// build adj list
 	int adj_index = 0;
-	vector<vector <EdgeType>> local_adj_list;
+	vector<vector<EdgeType>> local_adj_list;
 
 	string line;
 	vector<string> v;
@@ -734,42 +773,50 @@ inline void single_readQueryGraph(string query_graph_file) {
 
 	fp = fopen(query_graph_file.c_str(), "r");
 
-	while (fgets(str, BUFF_SIZE, fp) != NULL) {
+	while (fgets(str, BUFF_SIZE, fp) != NULL)
+	{
 		line = string(str);
-		if (line.at(0) == 't') {
+		if (line.at(0) == 't')
+		{
 			split(line, v, ' ');
 			int query_node_num = atoi(v[2].c_str());
 			local_adj_list.resize(query_node_num);
 		}
 
-		if (line.at(0) == 'v') {
+		if (line.at(0) == 'v')
+		{
 			split(line, v, ' ');
 			int node_index = atoi(v[1].c_str());
 			int label_from_file = atoi(v[2].c_str());
 			int actual_label = 0;
-			if (label_from_file < 0) {
+			if (label_from_file < 0)
+			{
 				actual_label = -1;
 			}
-			else {
+			else
+			{
 				actual_label = g_transfer_label_mapping[label_from_file];
 			}
 
 			g_nodes_label_query_graph[node_index] = actual_label;
 		}
 
-		if (line.at(0) == 'e') {
+		if (line.at(0) == 'e')
+		{
 			split(line, v, ' ');
 			int left_node = atoi(v[1].c_str());
 			int right_node = atoi(v[2].c_str());
 
-			//set<long long> edge_type_set = parse_edge_type_string(v[3]);
-			//long long edge_type_set = atoll(v[3].c_str());
+			// set<long long> edge_type_set = parse_edge_type_string(v[3]);
+			// long long edge_type_set = atoll(v[3].c_str());
 #ifdef NO_EDGE_TYPE
 			edge_type_set = 1;
 #endif
-			if (left_node != right_node) {
+			if (left_node != right_node)
+			{
 				EdgeType edgeA(right_node, v[3], true);
 				EdgeType edgeB(left_node, v[3], false);
+				// change these two when RM_EDGE
 				local_adj_list[left_node].push_back(edgeA);
 				local_adj_list[right_node].push_back(edgeB);
 			}
@@ -780,14 +827,16 @@ inline void single_readQueryGraph(string query_graph_file) {
 	g_cnt_node_query_graph = local_adj_list.size();
 
 	long long sum_degree = 0;
-	for (long long i = 0; i < local_adj_list.size(); i++) {
+	for (long long i = 0; i < local_adj_list.size(); i++)
+	{
 		int degree = local_adj_list[i].size();
+		// change these two when RM_EDGE or RM_NODE
 		g_node_degree_query_graph[i] = degree;
 		g_core_number_query_graph[i] = degree;
 		sum_degree += degree;
-		if (degree > MAX_DEGREE_A_NODE_QUERY) {
+		if (degree > MAX_DEGREE_A_NODE_QUERY)
+		{
 			MAX_DEGREE_A_NODE_QUERY = degree;
-
 		}
 	}
 	// need sum degree
@@ -802,14 +851,19 @@ inline void single_readQueryGraph(string query_graph_file) {
 	g_nodes_adj_list_with_edge_type_query_graph.resize(sum_degree);
 	long long cur_adj_start_index = 0;
 	int adj_list_index = 0;
-	for (int i = 0; i < local_adj_list.size(); i++) {
-		if (local_adj_list[i].size() == 0) {
+	for (int i = 0; i < local_adj_list.size(); i++)
+	{
+		// make sure this is true when RM_NODE
+		if (local_adj_list[i].size() == 0)
+		{
 			g_nodes_adj_list_start_index_query_graph[i] = cur_adj_start_index;
 			continue;
 		}
 
 		g_nodes_adj_list_start_index_query_graph[i] = cur_adj_start_index;
-		for (int j = 0; j < local_adj_list[i].size(); j++) {
+		for (int j = 0; j < local_adj_list[i].size(); j++)
+		{
+			// setting edge type of E(i,j)
 			g_nodes_adj_list_with_edge_type_query_graph[adj_list_index] = local_adj_list[i][j];
 			adj_list_index++;
 		}
@@ -822,13 +876,14 @@ inline void single_readQueryGraph(string query_graph_file) {
 	buildSimilarityMatrix();
 }
 
-
-inline void readQueryGraph(ifstream &fin_query) {
+inline void readQueryGraph(ifstream &fin_query)
+{
 
 	int m;
 
 	// if current query graph is bigger than before, resize data structure
-	if (g_sum_degree_query_graph > g_max_sum_degree_query_graphs) {
+	if (g_sum_degree_query_graph > g_max_sum_degree_query_graphs)
+	{
 		g_max_sum_degree_query_graphs = g_sum_degree_query_graph;
 		g_nodes_adj_list_with_edge_type_query_graph.resize(g_sum_degree_query_graph);
 		// used for matching
@@ -838,13 +893,15 @@ inline void readQueryGraph(ifstream &fin_query) {
 
 	// build adj list
 	int adj_index = 0;
-	for (long long i = 0; i < g_cnt_node_query_graph; i++) {
+	for (long long i = 0; i < g_cnt_node_query_graph; i++)
+	{
 
 		g_nodes_adj_list_start_index_query_graph[i] = adj_index;
-		
+
 		fin_query >> m >> g_label_cur_node_query_graph >> g_degree_cur_node_query_graph;
 
-		if (g_degree_cur_node_query_graph > MAX_DEGREE_A_NODE_QUERY) {
+		if (g_degree_cur_node_query_graph > MAX_DEGREE_A_NODE_QUERY)
+		{
 			MAX_DEGREE_A_NODE_QUERY = g_degree_cur_node_query_graph;
 		}
 
@@ -853,27 +910,121 @@ inline void readQueryGraph(ifstream &fin_query) {
 		g_node_degree_query_graph[i] = g_degree_cur_node_query_graph;
 		g_core_number_query_graph[i] = g_degree_cur_node_query_graph;
 		// build adj list
-		for (long long j = 0; j < g_degree_cur_node_query_graph; j++) {
+		for (long long j = 0; j < g_degree_cur_node_query_graph; j++)
+		{
 			fin_query >> g_nodes_adj_list_with_edge_type_query_graph[adj_index].node_id;
 			adj_index++;
-			
 		}
 	}
 	g_nodes_adj_list_start_index_query_graph[g_cnt_node_query_graph] = adj_index;
 
 	buildOneHopLabelCountQuery_used_by_sim();
-
 }
 
-
-inline void initNECStructure() {
-	NEC_mapping_child_with_same_label_cnt = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; //label and the parent node id
+inline void initNECStructure()
+{
+	NEC_mapping_child_with_same_label_cnt = new int[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // label and the parent node id
 	memset(NEC_mapping_child_with_same_label_cnt, 0, sizeof(int) * (g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE);
 
-	NEC_mapping_pair = new NEC_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // <label, parent node id>
+	NEC_mapping_pair = new NEC_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE];		 // <label, parent node id>
 	NEC_set_array = new NEC_set_array_element[(g_cnt_unique_label_data_graph + 1) * MAX_QUERY_NODE]; // <parent_id, sum>
 }
 
+inline void remove_node(long long nodeID)
+{
+	// vector<EdgeType> adjacency_data = local_adj_list[nodeID];
+	if (g_node_degree_query_graph[nodeID] > 1)
+	{
+		cout << "Cannot remove node " << nodeID << " because it has more than 1 edge. has " << g_node_degree_query_graph[nodeID] << endl;
+		return;
+	}
+
+	// find neighbor
+	int begin = g_nodes_adj_list_start_index_query_graph[nodeID];
+	int neighbor_nodeID = g_nodes_adj_list_with_edge_type_query_graph[begin].node_id;
+	// int neighbor_nodeID = adjacency_data[0].node_id;
+	// local_adj_list[nodeID] = new vector<EdgeType>;
+	//  set start and end nodes as the same aka. no connected nodes
+	/*for (int i = nodeID + 1; i < g_cnt_node_query_graph; i++)
+	{
+		g_nodes_adj_list_start_index_query_graph[i]--;
+	}*/
+	// set node label to 0 (the label not used)
+	int node_label = g_nodes_label_query_graph[nodeID];
+	g_nodes_label_query_graph[nodeID] = 0;
+
+	// change similarity
+	int query_begin = nodeID * g_cnt_unique_label_data_graph;
+	// decrese neighbor adjacent label of node by 1
+	g_one_hop_label_count_query_graph[query_begin + node_label]--;
+
+	// change similarity of every data node compared to neighbor
+	for (int data_id = 0; data_id < g_cnt_node_of_data_graph; data_id++)
+	{
+		int less_num = 0;
+		int sum = 0;
+		for (int i = 0; i < g_cnt_unique_label_data_graph; i++)
+		{
+			sum += g_one_hop_label_count_query_graph[query_begin + i];
+			int diff = g_node_degree_data_graph[neighbor_nodeID] - g_node_degree_query_graph[neighbor_nodeID];
+
+			if (diff < 0)
+			{
+				less_num = -diff;
+			}
+		}
+		// for neighbor
+		g_node_similarity_matrix[neighbor_nodeID * g_cnt_node_of_data_graph + data_id] = 1 - ((less_num * 1.0) / sum);
+		// for removed node
+		g_node_similarity_matrix[nodeID * g_cnt_node_of_data_graph + data_id] = 0;
+	}
+
+	// change query degrees
+	g_core_number_query_graph[neighbor_nodeID]--;
+	g_core_number_query_graph[nodeID]--;
+	g_node_degree_query_graph[neighbor_nodeID]--;
+	g_node_degree_query_graph[nodeID]--;
+}
+
+inline void pcocess_query_modification(string command, string arg1, string arg2)
+{
+	/*vector<string> v;
+	split(line, v, ' ');
+	long long arg1 = atoi(v[1].c_str());
+	long long arg2;
+	if (v.size() > 2)
+	{
+		arg2 = atoi(v[2].c_str());
+	}*/
+
+	switch (command.at(0))
+	{
+	case 'r':
+		switch (command.at(1))
+		{
+		case 'n':
+			long long id = atoi(arg1.c_str());
+			remove_node(id);
+			break;
+			// case 'e':
+			break;
+		}
+	/*case 'm':
+		switch (line.at(1))
+		{
+		case 'n'commandcase 'e':
+		}
+		break;
+	case 'a':
+		switch (line.at(1))
+		{
+		case 'n':
+		case 'e'command}*/
+	default:
+		cout << "Not supported query alteration" << endl
+			 << "Exiting" << endl;
+		return;
+	}
+}
 
 #endif // !FAST_DYNAMIC_PRE_PROCESS_DATA_GRAPH_H_
-

@@ -109,6 +109,7 @@ vector<pair<long long, long long>> NEC_set_by_label_index;
 
 // 2????
 long long g_root_node_id_of_query;
+// # the tree we were looking for
 CPINode indexSet[MAX_QUERY_NODE];
 // 4 0 0 113 0 0 0 0
 long long *NLF_array_query;
@@ -132,7 +133,9 @@ int *g_good_count_data_graph;
 int *g_good_count_need_clean_index_data_graph;
 long long g_good_count_need_clean_size;
 long long g_check_value = 0;
+// BFS ordered list of query nodeIDs
 vector<long long> g_forward_build_sequence;
+// parent of each query node as index
 long long g_forward_build_parent[MAX_QUERY_NODE];
 int g_forward_level[MAX_QUERY_NODE];
 
@@ -193,6 +196,7 @@ double found_mapping_enumeration = 10;
 // print skipped due to errors and NULLs
 int *g_one_hop_label_count_data_graph;
 int *g_two_hop_label_count_data_graph;
+// nodeID * (data # of nuique edge_labels) + edge_label  - 1 [for each node]
 int *g_one_hop_label_count_query_graph = NULL;
 int *g_two_hop_label_count_query_graph = NULL;
 vector<set<long long>> g_set_of_node_adj_list_query_graph;
@@ -237,6 +241,7 @@ clock_t g_clock;
 // NULL
 char *g_already_visited_data_graph;
 // 1 0 1 0 1 1 1 1 (why the zeros?)
+// g_node_similarity_matrix[query_id * g_cnt_node_of_data_graph + data_id] = 1 - (([degree_diff OR 0] * 1.0) / query_degree);
 double *g_node_similarity_matrix;
 
 // NULL

@@ -11,7 +11,7 @@ $(EXECUTABLE): $(OBJ)
 	$(CC) $^ -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -w -c $< -o $@
 
 $(OBJ_DIR):
 	mkdir -p $@

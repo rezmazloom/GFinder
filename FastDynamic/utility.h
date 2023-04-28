@@ -13,6 +13,8 @@
 #include <ctime>
 #include <time.h>
 
+#include "data_structure.h"
+
 #ifndef DIMENSION
 #define DIMENSION 2
 #endif
@@ -180,4 +182,16 @@ inline void print_vector(T arr)
 	}
 	std::cout << endl;
 }
+
+inline void print_tree(CoreQueryBFSTreeNode *tree)
+{
+	cout << "New tree" << endl;
+	cout << "\tchild_type" << typeid(tree->children.first).name() << ":" << typeid(tree->children.second).name();
+	cout << "\tchildren" << tree->children.first << ":" << tree->children.second;
+	cout << "\tnte" << tree->nte.first << ":" << tree->nte.second;
+	cout << "\tparent" << tree->parent_node;
+	cout << "\tcross_lvl_nte_type" << typeid(tree->cross_lvl_nte).name() << endl;
+	// cout << "\tcross_lvl_nte" << print_vector(tree->cross_lvl_nte) << endl;
+}
+
 #endif
