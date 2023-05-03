@@ -110,6 +110,7 @@ vector<pair<long long, long long>> NEC_set_by_label_index;
 // 2????
 long long g_root_node_id_of_query;
 // # the tree we were looking for
+// index_N_up_u is 2-D matrix for [parent candidate][self candidate]
 CPINode indexSet[MAX_QUERY_NODE];
 // 4 0 0 113 0 0 0 0
 long long *NLF_array_query;

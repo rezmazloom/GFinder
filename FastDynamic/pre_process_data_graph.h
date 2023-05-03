@@ -951,7 +951,7 @@ inline void remove_node(long long nodeID)
 	}*/
 	// set node label to 0 (the label not used)
 	int node_label = g_nodes_label_query_graph[nodeID];
-	g_nodes_label_query_graph[nodeID] = 0;
+	g_nodes_label_query_graph[nodeID] = g_cnt_unique_label_data_graph;
 
 	// change similarity
 	int query_begin = nodeID * g_cnt_unique_label_data_graph;
@@ -984,6 +984,9 @@ inline void remove_node(long long nodeID)
 	g_core_number_query_graph[nodeID]--;
 	g_node_degree_query_graph[neighbor_nodeID]--;
 	g_node_degree_query_graph[nodeID]--;
+
+	// remove node from mapping
+	all_mapping[nodeID] = 0;
 }
 
 inline void pcocess_query_modification(string command, string arg1, string arg2)
@@ -1020,6 +1023,10 @@ inline void pcocess_query_modification(string command, string arg1, string arg2)
 		{
 		case 'n':
 		case 'e'command}*/
+	case 'd':
+		cout << "DONE!" << endl;
+		return;
+		break;
 	default:
 		cout << "Not supported query alteration" << endl
 			 << "Exiting" << endl;

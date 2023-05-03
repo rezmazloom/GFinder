@@ -354,6 +354,7 @@ int main(int argc, char *argv[])
 		string command = "";
 		do
 		{
+			g_result_heap.clear();
 			coreDecompositionQuery();
 			cout << "Decompose Query OK!" << endl;
 			g_isTree = true;
@@ -492,7 +493,7 @@ int main(int argc, char *argv[])
 			string arg2 = "";
 			cin >> command >> arg1 >> arg2;
 			pcocess_query_modification(command, arg1, arg2);
-		} while (command.compare("done") != 1);
+		} while (command.at(0) != 'd');
 	}
 
 	return 0;

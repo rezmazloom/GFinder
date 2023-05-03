@@ -367,6 +367,162 @@ inline double LeafMappingEnumeration(double &found_mapping_enumeration, int *alr
 	return found_mapping_enumeration;
 }
 
+inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, int already_matched_size)
+{
+	vector<long long> candidates;
+	vector<long long> previousIds;
+	vector<long long> extendable_vertices;
+	int checked[MAX_QUERY_NODE] = {0};
+	int checked_parents[MAX_QUERY_NODE] = {0};
+	for (int i = 0; i < already_matched_size; i++)
+	{
+		previousIds.push_back(g_matching_order_unit_of_query[i].node);
+		checked_parents[g_matching_order_unit_of_query[i].node] = 1;
+	}
+
+	for (int i = 0; i < previousIds.size(); i++)
+	{
+		long long node = previousIds[i];
+		CoreQueryBFSTreeNode cc = core_query_tree[node];
+		for (int j = cc.children.first; j < cc.children.first + cc.children.second; j++)
+		{
+			long long child = g_core_tree_node_child_array[j];
+			// if not mapped
+			if (checked_parents[child] == 0)
+			{
+
+				set<long long> ntes; // = { node };
+				// collect all ntes for a child
+				for (int k = cc.nte.first; k < cc.nte.first + cc.nte.second; k++)
+				{
+					long long nte = g_core_tree_node_nte_array[k];
+					if (checked_parents[nte] == 0)
+						ntes.insert(g_core_tree_node_nte_array[k]);
+				}
+
+				int cur = 0;
+				for (; cur < g_forward_build_sequence.size(); cur++)
+				{
+					if (g_forward_build_sequence[cur] != child)
+					{
+						continue;
+					}
+					else
+						break;
+				}
+
+				// remove ntes that are not in DAG
+				for (int k = cur + 1; ntes.size() > 0 && k < g_forward_build_sequence.size(); k++)
+				{
+					long long cell = g_forward_build_sequence[k];
+					ntes.erase(cell);
+				}
+
+				if (ntes.size() == 0)
+					if (checked[child] == 0)
+					{
+						extendable_vertices.push_back(child);
+						checked[child] = 1;
+					}
+			}
+		}
+	}
+
+	double min_cost = 100000000000000;
+	int best_indext = 0;
+	// for (itr = s2.begin(); itr != s2.end(); itr++)
+	for (int i = 0; i < extendable_vertices.size(); i++)
+	{
+
+		long long node = extendable_vertices[i];
+		long long parent = core_query_tree[node].parent_node;
+		long long parent_mapped;
+		long long parent_index = -1;
+		long long parent_index_candidate = -1;
+
+		for (int j = 0; j < previousIds.size(); j++)
+		{
+			if (previousIds[j] == parent)
+			{
+				parent_mapped = (long long)g_actual_mapping[j];
+				break;
+			}
+		}
+		for (int k = 0; k < indexSet[node].parent_cand_size; k++)
+		{
+			if (indexSet[parent].candidates[k] == parent_mapped)
+			{
+				parent_index = k;
+				break;
+			}
+		}
+
+		double cost = 0;
+		int candidate_count = 0;
+		for (int j = 0; j < indexSet[node].size; j++)
+		{
+			long long candidate = indexSet[node].candidates[j];
+			if (already_mapping_flag_data[candidate] == 0)
+			{
+				if (j >= indexSet[node].size_of_index[parent_index])
+				{
+					continue;
+				}
+				candidate_count++;
+				CPICell cpi_node = indexSet[node].index_N_up_u[parent_index][j];
+				cost += (1 - cpi_node.similarity) * EDGE_MISSING_COST * g_node_degree_query_graph[node] + cpi_node.bridge_length * BRIDGE_COST;
+			}
+		}
+
+		if (candidate_count == 0)
+		{
+			MatchOrderUnit unit;
+			unit.node = node;
+			unit.pt_id = parent;
+			unit.pt_index = parent_index;
+			unit.nte_length = core_query_tree[node].nte.second;
+			unit.start_pos = core_query_tree[node].nte.first;
+			return unit;
+		}
+
+		if (cost / candidate_count < min_cost)
+		{
+			min_cost = cost / candidate_count;
+			best_indext = i;
+		}
+	}
+
+	long long node = extendable_vertices[best_indext];
+	long long parent = core_query_tree[node].parent_node;
+	long long parent_mapped;
+	long long parent_index = -1;
+	long long parent_index_candidate = -1;
+
+	for (int j = 0; j < previousIds.size(); j++)
+	{
+		if (previousIds[j] == parent)
+		{
+			parent_mapped = (long long)g_actual_mapping[j];
+			break;
+		}
+	}
+	for (int k = 0; k < indexSet[node].parent_cand_size; k++)
+	{
+		if (indexSet[parent].candidates[k] == parent_mapped)
+		{
+			parent_index = k;
+			break;
+		}
+	}
+	MatchOrderUnit unit;
+	unit.node = node;
+	unit.pt_id = parent;
+	unit.pt_index = parent_index;
+	unit.nte_length = core_query_tree[node].nte.second;
+	unit.start_pos = core_query_tree[node].nte.first;
+	return unit;
+}
+
 inline void find_inexact_result()
 {
 	bool exact = false;
@@ -473,6 +629,7 @@ inline void find_inexact_result()
 			}
 
 			// matching_unit contains the information of query data
+			// g_matching_order_unit_of_query[already_matched_size] = FindTheBestNodeToExpand(already_mapping_flag_data, already_matched_size);
 			unit = &g_matching_order_unit_of_query[already_matched_size];
 			temp_search_unit = &search_iterator[already_matched_size];
 			current_id = unit->node;
