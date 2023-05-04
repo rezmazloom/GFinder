@@ -20,5 +20,7 @@ clean:
 	@$(RM) -rv $(OBJ_DIR) $(EXECUTABLE)
 
 test:
-	./$(EXECUTABLE) test_dataset/data1.format test_dataset/query3.format test_dataset/predicate_similarity.txt 1 30 10 10 0
+	./$(EXECUTABLE) test_dataset/data1.format test_dataset/query3.format test_dataset/predicate_similarity.txt 1 30 10 12 0
+test2:
+	./$(EXECUTABLE) test_dataset/datau.format test_dataset/queryu.format test_dataset/predicate_similarityu.txt 1 30 10 12 0
 

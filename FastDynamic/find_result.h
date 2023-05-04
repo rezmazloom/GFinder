@@ -374,17 +374,23 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 	vector<long long> extendable_vertices;
 	int checked[MAX_QUERY_NODE] = {0};
 	int checked_parents[MAX_QUERY_NODE] = {0};
+
 	for (int i = 0; i < already_matched_size; i++)
 	{
 		previousIds.push_back(g_matching_order_unit_of_query[i].node);
 		checked_parents[g_matching_order_unit_of_query[i].node] = 1;
 	}
 
+	if (already_matched_size >= 3 && previousIds[0] == 4 && previousIds[1] == 3 && previousIds[2] == 5)
+	{
+		int jkdfgh = 0;
+	}
+
 	for (int i = 0; i < previousIds.size(); i++)
 	{
 		long long node = previousIds[i];
-		CoreQueryBFSTreeNode cc = core_query_tree[node];
-		for (int j = cc.children.first; j < cc.children.first + cc.children.second; j++)
+		CoreQueryBFSTreeNode node_core_qtree = core_query_tree[node];
+		for (int j = node_core_qtree.children.first; j < node_core_qtree.children.first + node_core_qtree.children.second; j++)
 		{
 			long long child = g_core_tree_node_child_array[j];
 			// if not mapped
@@ -392,12 +398,14 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 			{
 
 				set<long long> ntes; // = { node };
+				CoreQueryBFSTreeNode child_core_qtree = core_query_tree[child];
 				// collect all ntes for a child
-				for (int k = cc.nte.first; k < cc.nte.first + cc.nte.second; k++)
+				for (int k = child_core_qtree.nte.first; k < child_core_qtree.nte.first + child_core_qtree.nte.second; k++)
 				{
 					long long nte = g_core_tree_node_nte_array[k];
-					if (checked_parents[nte] == 0)
-						ntes.insert(g_core_tree_node_nte_array[k]);
+					if (checked_parents[nte] == 0){
+						ntes.insert(nte);
+					}
 				}
 
 				int cur = 0;
@@ -429,7 +437,7 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 	}
 
 	double min_cost = 100000000000000;
-	int best_indext = 0;
+	int best_index = 0;
 	// for (itr = s2.begin(); itr != s2.end(); itr++)
 	for (int i = 0; i < extendable_vertices.size(); i++)
 	{
@@ -476,23 +484,18 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 
 		if (candidate_count == 0)
 		{
-			MatchOrderUnit unit;
-			unit.node = node;
-			unit.pt_id = parent;
-			unit.pt_index = parent_index;
-			unit.nte_length = core_query_tree[node].nte.second;
-			unit.start_pos = core_query_tree[node].nte.first;
-			return unit;
+			best_index = i;
+			break;
 		}
 
 		if (cost / candidate_count < min_cost)
 		{
 			min_cost = cost / candidate_count;
-			best_indext = i;
+			best_index = i;
 		}
 	}
 
-	long long node = extendable_vertices[best_indext];
+	long long node = extendable_vertices[best_index];
 	long long parent = core_query_tree[node].parent_node;
 	long long parent_mapped;
 	long long parent_index = -1;
@@ -514,12 +517,25 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 			break;
 		}
 	}
+	int nte_count = 0;
+	for (int l = core_query_tree[node].nte.first; l < core_query_tree[node].nte.first + core_query_tree[node].nte.second; l++)
+	{
+		long long nte_nodeid = g_core_tree_node_nte_array[l];
+		for (int m = 0; m < already_matched_size; m++)
+		{
+			if (nte_nodeid == g_matching_order_unit_of_query[m].node)
+			{
+				nte_array_for_matching_unit[nte_count] = m;
+				nte_count++;
+			}
+		}
+	}
 	MatchOrderUnit unit;
 	unit.node = node;
 	unit.pt_id = parent;
 	unit.pt_index = parent_index;
-	unit.nte_length = core_query_tree[node].nte.second;
-	unit.start_pos = core_query_tree[node].nte.first;
+	unit.nte_length = nte_count;
+	unit.start_pos = 0;
 	return unit;
 }
 
@@ -629,7 +645,7 @@ inline void find_inexact_result()
 			}
 
 			// matching_unit contains the information of query data
-			// g_matching_order_unit_of_query[already_matched_size] = FindTheBestNodeToExpand(already_mapping_flag_data, already_matched_size);
+			//g_matching_order_unit_of_query[already_matched_size] = FindTheBestNodeToExpand(already_mapping_flag_data, already_matched_size);
 			unit = &g_matching_order_unit_of_query[already_matched_size];
 			temp_search_unit = &search_iterator[already_matched_size];
 			current_id = unit->node;
@@ -809,9 +825,9 @@ inline void find_inexact_result()
 								}
 								else
 								{
-
+									// finds the mapping of all the unit(current node)'s nte neighbors
 									long long neigborId = g_actual_mapping[nte_array_for_matching_unit[j]];
-
+									// checks if the two mapped nodes are really neighbors
 									if (g_adj_list_one_hop_distance_data_graph[data_id].query(neigborId))
 									{
 										int dis = 1;
@@ -824,6 +840,7 @@ inline void find_inexact_result()
 									}
 									else
 									{
+										// if the two mapped nodes are nor neighbors => missing edge
 										unmatch++;
 									}
 								}
