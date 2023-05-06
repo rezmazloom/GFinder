@@ -293,6 +293,7 @@ int main(int argc, char *argv[])
 	BRIDGE_COST = stoi(argv[6]);
 	EDGE_MISSING_COST = stoi(argv[7]);
 	IS_ONE_HOP_DATA_GRAPH = stoi(argv[8]);
+	VERTEX_EXTENDER = stoi(argv[9]);
 
 	cout << endl
 		 << "*******************************************************************" << endl;
@@ -304,6 +305,7 @@ int main(int argc, char *argv[])
 	cout << "Intermediate Cost: " << BRIDGE_COST << endl;
 	cout << "Missing Edge Cost: " << EDGE_MISSING_COST << endl;
 	cout << "Is One Hop: " << IS_ONE_HOP_DATA_GRAPH << endl;
+	cout << "Using Vertex extender selection: " << VERTEX_EXTENDER << endl;
 	cout << "*******************************************************************" << endl;
 
 	// ======= Begin clock ========
@@ -343,6 +345,7 @@ int main(int argc, char *argv[])
 			g_result_heap.clear();
 			g_maxPartialNum = 0;
 			g_mapping_found = 0;
+			back_trace_counter = 0;
 		}
 
 		TOTAL_BEGIN;
@@ -486,9 +489,11 @@ int main(int argc, char *argv[])
 			}*/
 
 			cout << "ATTENTION: Cost: " << (clock() - g_clock) * 1.0 / CLOCKS_PER_SEC << endl;
+			cout << "# of backtraces: " << back_trace_counter << endl;
 
 			// fin_query.close();
 			// print_globals();
+			// command = "done";
 			string arg1 = "";
 			string arg2 = "";
 			cin >> command >> arg1 >> arg2;

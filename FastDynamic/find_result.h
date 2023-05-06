@@ -8,6 +8,8 @@
 
 extern vector<Result> g_result_heap;
 extern int g_max_cost_in_heap;
+extern long long back_trace_counter;
+extern int VERTEX_EXTENDER;
 #define MAX_BACK_TRACE 30000000
 
 inline void updateMaxHeap(int cost, vector<long long> &result)
@@ -367,7 +369,7 @@ inline double LeafMappingEnumeration(double &found_mapping_enumeration, int *alr
 	return found_mapping_enumeration;
 }
 
-inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, int already_matched_size)
+inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, int already_matched_size, int mode)
 {
 	vector<long long> candidates;
 	vector<long long> previousIds;
@@ -375,6 +377,7 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 	int checked[MAX_QUERY_NODE] = {0};
 	int checked_parents[MAX_QUERY_NODE] = {0};
 
+	// find all mapped nodes
 	for (int i = 0; i < already_matched_size; i++)
 	{
 		previousIds.push_back(g_matching_order_unit_of_query[i].node);
@@ -386,10 +389,12 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 		int jkdfgh = 0;
 	}
 
+	// for each currently mapped node
 	for (int i = 0; i < previousIds.size(); i++)
 	{
 		long long node = previousIds[i];
 		CoreQueryBFSTreeNode node_core_qtree = core_query_tree[node];
+		//for each child of the currently mapped nodes
 		for (int j = node_core_qtree.children.first; j < node_core_qtree.children.first + node_core_qtree.children.second; j++)
 		{
 			long long child = g_core_tree_node_child_array[j];
@@ -399,16 +404,18 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 
 				set<long long> ntes; // = { node };
 				CoreQueryBFSTreeNode child_core_qtree = core_query_tree[child];
-				// collect all ntes for a child
+				// collect all ntes for a child of a mapped node
 				for (int k = child_core_qtree.nte.first; k < child_core_qtree.nte.first + child_core_qtree.nte.second; k++)
 				{
 					long long nte = g_core_tree_node_nte_array[k];
-					if (checked_parents[nte] == 0){
+					if (checked_parents[nte] == 0)
+					{
 						ntes.insert(nte);
 					}
 				}
 
 				int cur = 0;
+				// find the index of the node in the matching order
 				for (; cur < g_forward_build_sequence.size(); cur++)
 				{
 					if (g_forward_build_sequence[cur] != child)
@@ -439,6 +446,7 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 	double min_cost = 100000000000000;
 	int best_index = 0;
 	// for (itr = s2.begin(); itr != s2.end(); itr++)
+	// for every possible extendable_vertex (from previous steps)
 	for (int i = 0; i < extendable_vertices.size(); i++)
 	{
 
@@ -448,6 +456,7 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 		long long parent_index = -1;
 		long long parent_index_candidate = -1;
 
+		// Find what the parent node is mapped to
 		for (int j = 0; j < previousIds.size(); j++)
 		{
 			if (previousIds[j] == parent)
@@ -456,6 +465,8 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 				break;
 			}
 		}
+		// Find what the parent node index is in the the list of the current node candidates
+		// (built from parent candidates list)
 		for (int k = 0; k < indexSet[node].parent_cand_size; k++)
 		{
 			if (indexSet[parent].candidates[k] == parent_mapped)
@@ -467,6 +478,8 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 
 		double cost = 0;
 		int candidate_count = 0;
+		// for each candidate of a extendable vertex, find how many candidates it has and compute the cost
+		// of selecting it as part of the result
 		for (int j = 0; j < indexSet[node].size; j++)
 		{
 			long long candidate = indexSet[node].candidates[j];
@@ -488,9 +501,12 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 			break;
 		}
 
-		if (cost / candidate_count < min_cost)
+		if (mode == 1 && cost / candidate_count < min_cost)
 		{
 			min_cost = cost / candidate_count;
+			best_index = i;
+		}else if (mode == 2 && candidate_count < min_cost){
+			min_cost = candidate_count;
 			best_index = i;
 		}
 	}
@@ -509,15 +525,25 @@ inline MatchOrderUnit FindTheBestNodeToExpand(int *already_mapping_flag_data, in
 			break;
 		}
 	}
-	for (int k = 0; k < indexSet[node].parent_cand_size; k++)
+	// for (int k = 0; k < indexSet[node].parent_cand_size; k++)
+	//{
+	//	if (indexSet[parent].candidates[k] == parent_mapped)
+	//	{
+	//		parent_index = k;
+	//		break;
+	//	}
+	// }
+
+	for (int i = 0; i < already_matched_size; i++)
 	{
-		if (indexSet[parent].candidates[k] == parent_mapped)
+		if (g_matching_order_unit_of_query[i].node == parent)
 		{
-			parent_index = k;
+			parent_index = i;
 			break;
 		}
 	}
 	int nte_count = 0;
+	// for each NTE  of the selected vertex, what is already matched
 	for (int l = core_query_tree[node].nte.first; l < core_query_tree[node].nte.first + core_query_tree[node].nte.second; l++)
 	{
 		long long nte_nodeid = g_core_tree_node_nte_array[l];
@@ -570,9 +596,10 @@ inline void find_inexact_result()
 		char back_trace = 0;
 		long long already_matched_size = 1; // the current query index of the query sequence, because 0 is the root has already been matched
 		int cost_now = 0;
-
+		
 		while (true)
 		{
+			back_trace_counter++;
 			if (already_matched_size == 0) //"No MATCH found!"
 				break;
 			if (already_matched_size == g_matching_order_size_of_core)
@@ -645,7 +672,9 @@ inline void find_inexact_result()
 			}
 
 			// matching_unit contains the information of query data
-			//g_matching_order_unit_of_query[already_matched_size] = FindTheBestNodeToExpand(already_mapping_flag_data, already_matched_size);
+			if (VERTEX_EXTENDER > 0){
+				g_matching_order_unit_of_query[already_matched_size] = FindTheBestNodeToExpand(already_mapping_flag_data, already_matched_size, VERTEX_EXTENDER);
+			}
 			unit = &g_matching_order_unit_of_query[already_matched_size];
 			temp_search_unit = &search_iterator[already_matched_size];
 			current_id = unit->node;
@@ -736,6 +765,7 @@ inline void find_inexact_result()
 			// iterate inside a cpi
 			while (true)
 			{
+				back_trace_counter++;
 				pos = index_unit_current->index_N_up_u[g_cand_pos_in_indexset[parent_id]][temp_search_unit->address_pos].index;
 				int bridge_cost = index_unit_current->index_N_up_u[g_cand_pos_in_indexset[parent_id]][temp_search_unit->address_pos].bridge_length - 1;
 				bridge_cost = bridge_cost * BRIDGE_COST;

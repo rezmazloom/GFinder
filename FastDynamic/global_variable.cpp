@@ -2,6 +2,9 @@
 #include "stdafx.h"
 #include "global_variable.h"
 
+long long back_trace_counter = 0;
+int VERTEX_EXTENDER = 0;
+
 // data label max number
 long long g_max_label_counter = 0;
 // data graph # of nodes
